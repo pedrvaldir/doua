@@ -220,14 +220,14 @@ class _BasisDouaTutorialState extends State<_BasisDouaTutorial> {
           children: [
             _transformOnXAxisBy(
                 Padding(
-                  padding: EdgeInsets.all(DouaSizes.spacing24),
+                  padding: EdgeInsets.symmetric(vertical: DouaSizes.spacing4),
                   child: DouaText.caption(step.title),
                 ),
                 2.0),
             _transformOnXAxisBy(
                 Padding(
                   padding: EdgeInsets.all(DouaSizes.spacing24),
-                  child: step.icon,
+                  child: Container(height: 150, child: step.icon),
                 ),
                 2.0),
             SizedBox(

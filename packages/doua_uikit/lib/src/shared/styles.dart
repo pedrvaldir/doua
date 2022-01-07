@@ -16,7 +16,7 @@ const TextStyle heading3Style = TextStyle(
 );
 
 const TextStyle headlineStyle = TextStyle(
-  fontSize: 30,
+  fontSize: 18,
   fontWeight: FontWeight.w700,
 );
 
@@ -31,6 +31,6 @@ const TextStyle subheadingStyle = TextStyle(
 );
 
 const TextStyle captionStyle = TextStyle(
-  fontSize: 12,
+  fontSize: 30,
   fontWeight: FontWeight.w400,
 );

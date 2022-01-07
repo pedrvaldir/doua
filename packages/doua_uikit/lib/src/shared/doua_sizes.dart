@@ -6,4 +6,5 @@ class DouaSizes {
   static const spacing20 = 24.00;
   static const spacing32 = 32.00;
   static const spacingStack15 = 15.00;
+  static const spacingStack30 = 30.00;
 }
