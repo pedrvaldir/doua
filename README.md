@@ -1,17 +1,21 @@
 
-<h1 align="center"> - DouA 😃 😃</h1>
+<h1 align="center">Doua</h1>
 
+---
 
 ## 👨🏽‍💻 Esse Projeto (Open Source)
 <h6 align="left">Visa a disseminação de conhecimento e experiência para criar e gerar valor. A ideia principal é fornecer oportundidade para desenvolvedores colocarem em prática conhecimentos e trazer melhorias em um projeto real. </br>
 Durante o seu processo de criação e concepção será aberta uma agenda para apresentações, discussões e compartilhamento de ideias para que a evolução seja exponencial.</br>
 Toda ideia e contruibuição é bem vinda!! </h6>
 
+---
+
 ## 🎯 Objetivo
 
 <h5 align="center">Conectar quem pode ajudar/contribuir com quem precisa. 
 Há sempre pessoas precisando de ajuda. Doar roupas, móveis, alimentos, brinquedos, produtos que não são mais usados ou prestar serviços e contribuições.</h5>
 
+---
 
 ### 👀 VISAO DO PRODUTO
 
@@ -32,10 +36,9 @@ NÃO É:
 FAZ:
 - Conexão com pontos de recebimento/doação em um  raio de 5km
 
-
+---
 
 ### Autor
----
 
 <a href="http://valdirpedroso.com">
  <img style="border-radius: 50%;" src="http://www.valdirpedroso.com/img/profile.png" width="100px;" alt=""/>
