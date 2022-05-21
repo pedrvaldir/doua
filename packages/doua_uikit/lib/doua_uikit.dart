@@ -8,6 +8,7 @@ export 'src/components/doua_header.dart';
 export 'src/components/doua_divider.dart';
 export 'src/components/doua_tag_title.dart';
 export 'src/components/doua_list_card.dart';
+export 'src/components/doua_avatar.dart';
 
 export 'src/shared/doua_pallet.dart';
 export 'src/shared/doua_sizes.dart';
