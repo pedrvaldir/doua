@@ -1,5 +1,12 @@
+import 'dart:async';
+
+import 'package:doua/utils.dart';
 import 'package:doua_uikit/doua_uikit.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'model/doua_user.dart';
+import 'viewmodel/login_viewmodel.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key? key, this.title}) : super(key: key);
@@ -11,6 +18,8 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final _loginViewModel = LoginViewModel();
+
   Widget _divider() {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 10),
@@ -47,61 +56,24 @@ class _LoginPageState extends State<LoginPage> {
   Widget _facebookButton() {
     return Column(
       children: [
-        Container(
-          height: 40,
-          child: Row(children: <Widget>[
-            Expanded(
-              flex: 1,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Color(0xff1959a9),
-                  borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(5),
-                      topLeft: Radius.circular(5)),
-                ),
-                alignment: Alignment.center,
-                child: Text('F',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w400)),
-              ),
-            ),
-            Expanded(
-              flex: 5,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Color(0xff2872ba),
-                  borderRadius: BorderRadius.only(
-                      bottomRight: Radius.circular(5),
-                      topRight: Radius.circular(5)),
-                ),
-                alignment: Alignment.center,
-                child: Text('Facebook',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w400)),
-              ),
-            ),
-          ]),
-        ),
-        SizedBox(height: 20),
-        Container(
-          height: 40,
-          child: Row(
-            children: <Widget>[
+        GestureDetector(
+          onTap: () {
+            signIn(SignWith.FACEBOOK);
+          },
+          child: Container(
+            height: 40,
+            child: Row(children: <Widget>[
               Expanded(
                 flex: 1,
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Color(0xffdb4a39),
+                    color: Color(0xff1959a9),
                     borderRadius: BorderRadius.only(
                         bottomLeft: Radius.circular(5),
                         topLeft: Radius.circular(5)),
                   ),
                   alignment: Alignment.center,
-                  child: Text('G',
+                  child: Text('F',
                       style: TextStyle(
                           color: Colors.white,
                           fontSize: 18,
@@ -112,28 +84,84 @@ class _LoginPageState extends State<LoginPage> {
                 flex: 5,
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Color(0xffdb4a39),
+                    color: Color(0xff2872ba),
                     borderRadius: BorderRadius.only(
                         bottomRight: Radius.circular(5),
                         topRight: Radius.circular(5)),
                   ),
                   alignment: Alignment.center,
-                  child: Text('Google',
+                  child: Text('Facebook',
                       style: TextStyle(
                           color: Colors.white,
                           fontSize: 18,
                           fontWeight: FontWeight.w400)),
                 ),
               ),
-            ],
+            ]),
           ),
         ),
+        SizedBox(height: 20),
+        StreamBuilder<bool>(
+            stream: _loginViewModel.stream,
+            initialData: false,
+            builder: (context, snapshot) {
+              return GestureDetector(
+                onTap: () {
+                  signIn(SignWith.GOOGLE);
+                },
+                child: Container(
+                  height: 40,
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        flex: 1,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Color(0xffdb4a39),
+                            borderRadius: BorderRadius.only(
+                                bottomLeft: Radius.circular(5),
+                                topLeft: Radius.circular(5)),
+                          ),
+                          alignment: Alignment.center,
+                          child: Text('G',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w400)),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 5,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Color(0xffdb4a39),
+                            borderRadius: BorderRadius.only(
+                                bottomRight: Radius.circular(5),
+                                topRight: Radius.circular(5)),
+                          ),
+                          alignment: Alignment.center,
+                          child: Text('Google',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w400)),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            })
       ],
     );
   }
 
   Widget _imgHeader() {
-    return DouaAvatar();
+    return StreamBuilder<bool>(
+        stream: _loginViewModel.stream,
+        builder: (context, snapshot) {
+          return DouaAvatar(url: _loginViewModel.user.photoUrl);
+        });
   }
 
   Widget _title() {
@@ -184,7 +212,7 @@ class _LoginPageState extends State<LoginPage> {
                     _title(),
                     SizedBox(height: 20),
                     _divider(),
-                    _facebookButton(),
+                    _signStruture(),
                   ],
                 ),
               ),
@@ -193,5 +221,54 @@ class _LoginPageState extends State<LoginPage> {
         ],
       ),
     ));
+  }
+
+  Future<void> signIn(SignWith opc) async {
+    await _loginViewModel.signIn(opc);
+  }
+
+  Future<void> signOut() async {
+    await _loginViewModel.signOut();
+  }
+
+  _signStruture() {
+    return StreamBuilder<bool>(
+        stream: _loginViewModel.stream,
+        builder: (context, snapshot) {
+          if (snapshot.data == null || snapshot.data == false) {
+            return handleAuthenticate();
+          } else {
+            return CircularProgressIndicator();
+          }
+        });
+  }
+
+  _signOut() {
+    return DouaButton(
+      title: 'Sair',
+      onClick: () {
+        signOut();
+      },
+    );
+  }
+
+  Widget handleAuthenticate() {
+    if (_loginViewModel.isLogged) {
+      return _credentials();
+    } else {
+      return _facebookButton();
+    }
+  }
+
+  _credentials() {
+    return Column(
+      children: [
+        DouaText.body(_loginViewModel.user.name!),
+        SizedBox(height: 20),
+        DouaText.body(_loginViewModel.user.email!),
+        SizedBox(height: 20),
+        _signOut(),
+      ],
+    );
   }
 }

@@ -4,3 +4,8 @@ class Strings {
     static const  TITLE_DONOR="Doadores / Doações";
     static const  TITLE_GRANTEES="Recebedores / Donatários";
 }
+
+enum SignWith {
+  GOOGLE,
+  FACEBOOK
+}
