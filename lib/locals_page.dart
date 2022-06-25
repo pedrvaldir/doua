@@ -22,11 +22,11 @@ class _LocalsPageState extends State<LocalsPage> {
   void _onMapCreated(GoogleMapController _cntlr) {
     _controller = _controller;
     location.onLocationChanged.listen((l) {
-      _controller!.animateCamera(
-        CameraUpdate.newCameraPosition(
-          CameraPosition(target: LatLng(l.latitude!, l.longitude!), zoom: 15),
-        ),
-      );
+      // _controller!.animateCamera(
+      //   CameraUpdate.newCameraPosition(
+      //     CameraPosition(target: LatLng(l.latitude!, l.longitude!), zoom: 15),
+      //   ),
+      // );
     });
   }
 
@@ -61,19 +61,19 @@ class _LocalsPageState extends State<LocalsPage> {
 
   Set<Marker> getmarkers() {
     setState(() {
-      _markers.add(Marker( 
+      _markers.add(Marker(
         markerId: MarkerId('1'),
-        position: LatLng(-25.526873, -49.237108), 
-        infoWindow: InfoWindow( 
+        position: LatLng(-25.526873, -49.237108),
+        infoWindow: InfoWindow(
           title: 'MArcador 1 ',
           snippet: 'My Custom Subtitle',
         ),
-        icon: BitmapDescriptor.defaultMarker, 
+        icon: BitmapDescriptor.defaultMarker,
       ));
 
-      _markers.add(Marker( 
+      _markers.add(Marker(
         markerId: MarkerId('2'),
-        position: LatLng(-25.507333, -49.235974), 
+        position: LatLng(-25.507333, -49.235974),
         infoWindow: InfoWindow(
           title: 'Marcador 2',
           snippet: 'Subtitle',
@@ -81,14 +81,14 @@ class _LocalsPageState extends State<LocalsPage> {
         icon: BitmapDescriptor.defaultMarker,
       ));
 
-      _markers.add(Marker( 
+      _markers.add(Marker(
         markerId: MarkerId('3'),
-        position: LatLng(-25.463612, -49.229548), 
-        infoWindow: InfoWindow( 
+        position: LatLng(-25.463612, -49.229548),
+        infoWindow: InfoWindow(
           title: 'Marcador 3',
           snippet: 'Subtitle',
         ),
-        icon: BitmapDescriptor.defaultMarker, 
+        icon: BitmapDescriptor.defaultMarker,
       ));
     });
     return _markers;
@@ -119,26 +119,30 @@ class _LocalsPageState extends State<LocalsPage> {
         LatLng(_currentPosition!.latitude!, _currentPosition!.longitude!);
     location.onLocationChanged.listen((LocationData currentLocation) {
       print("${currentLocation.longitude} : ${currentLocation.longitude}");
-      setState(() {
-        _currentPosition = currentLocation;
-        _initialcameraposition =
-            LatLng(_currentPosition!.latitude!, _currentPosition!.longitude!);
-      });
+      if (mounted) {
+        setState(() {
+          _currentPosition = currentLocation;
+          _initialcameraposition =
+              LatLng(_currentPosition!.latitude!, _currentPosition!.longitude!);
+        });
+      }
     });
   }
 
   void _setMarkers(LatLng point) {
-    final String markerIdVal = 'marker_id_$_markerIdCounter';
-    _markerIdCounter++;
-    setState(() {
-      print(
-          'Marker | Latitude: ${point.latitude}  Longitude: ${point.longitude}');
-      _markers.add(
-        Marker(
-          markerId: MarkerId(markerIdVal),
-          position: point,
-        ),
-      );
-    });
+    if (mounted) {
+      final String markerIdVal = 'marker_id_$_markerIdCounter';
+      _markerIdCounter++;
+      setState(() {
+        print(
+            'Marker | Latitude: ${point.latitude}  Longitude: ${point.longitude}');
+        _markers.add(
+          Marker(
+            markerId: MarkerId(markerIdVal),
+            position: point,
+          ),
+        );
+      });
+    }
   }
 }

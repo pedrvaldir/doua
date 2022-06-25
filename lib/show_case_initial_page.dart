@@ -63,6 +63,8 @@ List<Widget> get textWidgets => [
 List<Widget> buttonWidgets(var context) => [
       DouaTagTitle(title: "TAG TITLE"),
       DouaText.body('List Cards'),
+      DouaTagTitle(title: "TAG Custom", iconDoua: Icons.add),
+      DouaText.body('List Cards'),
       DouaListCard(list: _listCards()),
       DouaText.headline('Buttons'),
       verticalSpaceMedium(),

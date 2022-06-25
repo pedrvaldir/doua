@@ -1,3 +1,4 @@
+import 'package:doua_uikit/doua_uikit.dart';
 import 'package:flutter/cupertino.dart';
 
 const TextStyle heading1Style = TextStyle(
@@ -11,9 +12,9 @@ const TextStyle heading2Style = TextStyle(
 );
 
 const TextStyle heading3Style = TextStyle(
-  fontSize: 24,
-  fontWeight: FontWeight.w600,
-);
+    fontSize: 18,
+    fontWeight: FontWeight.w400,
+    color: DouaPallet.kcDarkGreyColor);
 
 const TextStyle headlineStyle = TextStyle(
   fontSize: 18,

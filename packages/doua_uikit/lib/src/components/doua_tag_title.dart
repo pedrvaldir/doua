@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 
 class DouaTagTitle extends StatelessWidget {
   String? title;
+  IconData? iconDoua;
+  bool? isRight;
 
-  DouaTagTitle({
-    Key? key,
-    this.title,
-  }) : super(key: key);
+  DouaTagTitle({Key? key, this.title, this.iconDoua, this.isRight})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -16,14 +16,27 @@ class DouaTagTitle extends StatelessWidget {
       children: [
         DouaDivider(),
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: isRight == true
+              ? MainAxisAlignment.spaceBetween
+              : MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            DouaText.headline(title!.toUpperCase()),
-            Icon(
-              Icons.add,
-              size: 40,
+            if (isRight != true && iconDoua != null)
+              Icon(
+                iconDoua,
+                size: 40,
+                color: DouaPallet.kcMediumGreyColor,
+              ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: DouaText.headingThree(title!.toUpperCase()),
             ),
+            if (isRight == true && iconDoua != null)
+              Icon(
+                iconDoua,
+                size: 40,
+                color: DouaPallet.kcMediumGreyColor,
+              ),
           ],
         ),
         DouaDivider(),

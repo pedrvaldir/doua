@@ -17,7 +17,7 @@ class DouaDivider extends StatelessWidget {
             thickness: 2,
             indent: 4,
             endIndent: 4,
-            color: color != null ? color : DouaPallet.kcPrimaryColor,
+            color: color != null ? color : DouaPallet.kcSecondColor,
           ),
         ),
       ],

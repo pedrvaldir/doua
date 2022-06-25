@@ -165,24 +165,15 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget _title() {
-    return new RichText(
-      text: new TextSpan(
-        style: new TextStyle(
-          fontSize: 40.0,
-          color: Colors.black,
-        ),
-        children: <TextSpan>[
-          new TextSpan(
-              text: 'Dou',
-              style: TextStyle(color: DouaPallet.kcMediumGreyColor)),
-          new TextSpan(
-              text: 'A',
-              style: new TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: DouaPallet.kcPrimaryColor)),
-        ],
-      ),
-    );
+    return StreamBuilder<bool>(
+        stream: _loginViewModel.stream,
+        builder: (context, snapshot) {
+          if (_loginViewModel.isLogged) {
+            return _credentials();
+          } else {
+            return _layoutDoua();
+          }
+        });
   }
 
   @override
@@ -211,7 +202,6 @@ class _LoginPageState extends State<LoginPage> {
                     SizedBox(height: 20),
                     _title(),
                     SizedBox(height: 20),
-                    _divider(),
                     _signStruture(),
                   ],
                 ),
@@ -238,13 +228,13 @@ class _LoginPageState extends State<LoginPage> {
           if (snapshot.data == null || snapshot.data == false) {
             return handleAuthenticate();
           } else {
-            return CircularProgressIndicator();
+            return Center(child: CircularProgressIndicator());
           }
         });
   }
 
   _signOut() {
-    return DouaButton(
+    return DouaButton.outline(
       title: 'Sair',
       onClick: () {
         signOut();
@@ -254,7 +244,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget handleAuthenticate() {
     if (_loginViewModel.isLogged) {
-      return _credentials();
+      return _listOptions();
     } else {
       return _facebookButton();
     }
@@ -263,10 +253,49 @@ class _LoginPageState extends State<LoginPage> {
   _credentials() {
     return Column(
       children: [
-        DouaText.body(_loginViewModel.user.name!),
-        SizedBox(height: 20),
+        DouaText.headingOne(_loginViewModel.user.name!),
+        SizedBox(height: 10),
         DouaText.body(_loginViewModel.user.email!),
         SizedBox(height: 20),
+      ],
+    );
+  }
+
+  _layoutDoua() {
+    return Column(
+      children: [
+        RichText(
+          text: new TextSpan(
+            style: new TextStyle(
+              fontSize: 40.0,
+              color: Colors.black,
+            ),
+            children: <TextSpan>[
+              new TextSpan(
+                  text: 'Dou',
+                  style: TextStyle(color: DouaPallet.kcMediumGreyColor)),
+              new TextSpan(
+                  text: 'A',
+                  style: new TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: DouaPallet.kcPrimaryColor)),
+            ],
+          ),
+        ),
+        _divider()
+      ],
+    );
+  }
+
+  Widget _listOptions() {
+    return Column(
+      children: [
+        DouaTagTitle(
+            title: "Informações", iconDoua: Icons.account_circle_rounded),
+        DouaTagTitle(
+            title: "Notificações", iconDoua: Icons.circle_notifications),
+        DouaTagTitle(title: "Favoritos", iconDoua: Icons.favorite),
+        DouaSpace.verticalSpaceSmall,
         _signOut(),
       ],
     );

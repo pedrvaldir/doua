@@ -18,7 +18,6 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
-
   int _initialIndex = 0;
   final List<Widget> _screens = [
     LocalsPage(),
@@ -52,14 +51,22 @@ class _SearchPageState extends State<SearchPage> {
               Padding(
                 padding: const EdgeInsets.only(
                     left: DouaSizes.spacing20, right: DouaSizes.spacing20),
-                child: DouaTagTitle(title: Strings.TITLE_DONOR),
+                child: DouaTagTitle(
+                  title: Strings.TITLE_DONOR,
+                  iconDoua: Icons.add,
+                  isRight: true,
+                ),
               ),
               DouaListCard(list: _listCards()),
               DouaSpace.horizontalSpaceSmall,
               Padding(
                 padding: const EdgeInsets.only(
                     left: DouaSizes.spacing20, right: DouaSizes.spacing20),
-                child: DouaTagTitle(title: Strings.TITLE_GRANTEES),
+                child: DouaTagTitle(
+                  title: Strings.TITLE_GRANTEES,
+                  iconDoua: Icons.add,
+                  isRight: true,
+                ),
               ),
               DouaListCard(list: _listCards()),
             ],
@@ -82,10 +89,7 @@ class _SearchPageState extends State<SearchPage> {
       _initialIndex = index;
     });
   }
-
 }
-
-
 
 _listCards() {
   return [
