@@ -1,12 +1,16 @@
 import 'dart:async';
 
+import 'package:doua/api_response.dart';
 import 'package:doua/search_page.dart';
 import 'package:doua_uikit/doua_uikit.dart';
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
+import 'package:lottie/lottie.dart';
 import 'doua_onboarding_page.dart';
 import 'locals_page.dart';
 import 'login_page.dart';
+import 'viewmodel/home_viewmodel.dart';
+import 'viewmodel/login_viewmodel.dart';
 
 class HomePage extends StatefulWidget {
   final String title;
@@ -18,7 +22,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
+  final _loginViewModel = LoginViewModel();
+  final _homeViewModel = HomeViewModel();
+  bool isLoading = false;
   int _initialIndex = 0;
   final List<Widget> _screens = [
     SearchPage("Search"),
@@ -28,25 +34,24 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    _showOnboarding();
     super.initState();
+
+    _loadData();
   }
-  
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //body: _body(),
-      body: _screens[_initialIndex],
-      bottomNavigationBar: _bottomNavigatorCustom()
-    );
+        //body: _body(),
+        body: isLoading ? _buildLoading : _screens[_initialIndex],
+        bottomNavigationBar: _bottomNavigatorCustom());
   }
 
-  void _showOnboarding() {
-    Timer(Duration(seconds: 1), () {
-      setState(() {
-        DouaOnboading(context).show(context);
-      });
+  void _checkOnboarding() async {
+    isLoading = true;
+    await getOnboarding();
+    setState(() {
+      isLoading = false;
     });
   }
 
@@ -57,7 +62,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   _bottomNavigatorCustom() {
-
     return BottomNavigationBar(
       backgroundColor: DouaPallet.kcLightGreyColor,
       currentIndex: _initialIndex,
@@ -98,5 +102,28 @@ class _HomePageState extends State<HomePage> {
             label: "Usuário"),
       ],
     );
+  }
+
+  Future<void> getOnboarding() async {
+    if (!_loginViewModel.isLogged) {
+      List<TutorialSteps> onboarding = await _homeViewModel.getOnboarding();
+      if (!onboarding.isEmpty) DouaOnboading(context, onboarding).show(context);
+    }
+  }
+
+  Center get _buildLoading {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          CircularProgressIndicator(),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _loadData() async {
+    _loginViewModel.checkUserLogged();
+    if (!_loginViewModel.isLogged) _checkOnboarding();
   }
 }

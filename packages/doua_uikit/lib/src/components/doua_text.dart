@@ -9,7 +9,7 @@ class DouaText extends StatelessWidget {
 
   const DouaText.headingOne(this.text) : style = heading1Style;
   const DouaText.headingTwo(this.text) : style = heading2Style;
-  const DouaText.headingThree(this.text) : style = heading3Style;
+  const DouaText.headingTitle(this.text) : style = headingTitle;
   const DouaText.headline(this.text) : style = headlineStyle;
   const DouaText.subheading(this.text) : style = subheadingStyle;
   const DouaText.caption(this.text) : style = captionStyle;
@@ -22,7 +22,6 @@ class DouaText extends StatelessWidget {
     return Text(
       text,
       style: style,
-      overflow: TextOverflow.ellipsis,
     );
   }
 }

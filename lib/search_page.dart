@@ -2,11 +2,16 @@ import 'dart:async';
 
 import 'package:doua_uikit/doua_uikit.dart';
 import 'package:flutter/material.dart';
+import 'doua_list_card.dart';
 import 'doua_onboarding_page.dart';
 
 import 'package:doua/utils.dart';
 
 import 'locals_page.dart';
+import 'model/doua_acao.dart';
+import 'viewmodel/home_viewmodel.dart';
+import 'viewmodel/login_viewmodel.dart';
+import 'viewmodel/search_viewmodel.dart';
 
 class SearchPage extends StatefulWidget {
   final String title;
@@ -18,15 +23,25 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
+  bool isLoading = false;
+  final _loginViewModel = LoginViewModel();
+  final _searchViewModel = SearchViewModel();
   int _initialIndex = 0;
+  List<DouaAcao> acoes = [];
   final List<Widget> _screens = [
     LocalsPage(),
   ];
 
   @override
   void initState() {
-    _showOnboarding();
+    _loadList();
     super.initState();
+  }
+
+  _loadList() async {
+    await _loginViewModel.checkUserLogged();
+    acoes = await _searchViewModel.getAcoes();
+    if (mounted) setState(() {});
   }
 
   @override
@@ -45,7 +60,7 @@ class _SearchPageState extends State<SearchPage> {
               DouaHeader(),
               DouaSpace.horizontalSpaceSmall,
               Center(
-                child: DouaText.headingOne(Strings.WELCOME_MESSAGE),
+                child: DouaText.headingOne(getName() + Strings.WELCOME_MESSAGE),
               ),
               DouaSpace.horizontalSpaceSmall,
               Padding(
@@ -57,7 +72,8 @@ class _SearchPageState extends State<SearchPage> {
                   isRight: true,
                 ),
               ),
-              DouaListCard(list: _listCards()),
+              DouaListCard(
+                  list: acoes.where((i) => i.idTipoAcao == 1).toList()),
               DouaSpace.horizontalSpaceSmall,
               Padding(
                 padding: const EdgeInsets.only(
@@ -68,7 +84,8 @@ class _SearchPageState extends State<SearchPage> {
                   isRight: true,
                 ),
               ),
-              DouaListCard(list: _listCards()),
+              DouaListCard(
+                  list: acoes.where((i) => i.idTipoAcao != 1).toList()),
             ],
           ),
         ),
@@ -76,27 +93,16 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
-  void _showOnboarding() {
-    Timer(Duration(seconds: 1), () {
-      setState(() {
-        DouaOnboading(context).show(context);
-      });
-    });
-  }
-
   void onTabTapped(int index) {
     setState(() {
       _initialIndex = index;
     });
   }
-}
 
-_listCards() {
-  return [
-    DouaCard(title: "Roupas de frio", pathImg: 'assets/place-holder.png'),
-    DouaCard(title: "Prateleira", pathImg: 'assets/place-holder.png'),
-    DouaCard(title: "Porta", pathImg: 'assets/place-holder.png'),
-    DouaCard(title: "Roupas de frio", pathImg: 'assets/place-holder.png'),
-    DouaCard(title: "Maquina de lavar", pathImg: 'assets/place-holder.png'),
-  ];
+  getName() {
+    if (_loginViewModel.isLogged && _loginViewModel.user.name != null)
+      return _loginViewModel.user.name.toString() +"\n";
+    else
+      return "";
+  }
 }

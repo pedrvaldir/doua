@@ -29,7 +29,7 @@ class DouaTagTitle extends StatelessWidget {
               ),
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: DouaText.headingThree(title!.toUpperCase()),
+              child: DouaText.headingTitle(title!.toUpperCase()),
             ),
             if (isRight == true && iconDoua != null)
               Icon(

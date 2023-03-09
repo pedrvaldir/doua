@@ -3,14 +3,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-import '../Utils/doua_api_service.dart';
 import '../api_response.dart';
 
 class DaoLogin {
   late final GoogleSignInAccount? _googleUser;
   late final GoogleSignInAuthentication? _googleAuth;
   Future<UserCredential> signInWithGoogle() async {
-
     _googleUser = await GoogleSignIn().signIn();
 
     _googleAuth = await _googleUser?.authentication;
@@ -20,7 +18,9 @@ class DaoLogin {
       idToken: _googleAuth?.idToken,
     );
 
-    return await FirebaseAuth.instance.signInWithCredential(credential);
+    var result = await FirebaseAuth.instance.signInWithCredential(credential);
+
+    return result;
   }
 
   Future<UserCredential> signInWithFacebook() async {
@@ -29,8 +29,12 @@ class DaoLogin {
 
     final OAuthCredential facebookAuthCredential =
         FacebookAuthProvider.credential(loginResult.accessToken!.token);
-
-    return FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
+    try {
+      return FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
+    } catch (e) {
+      print(e);
+      return FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
+    }
   }
 
   Future<ApiResponse> signIn(SignWith sign) async {

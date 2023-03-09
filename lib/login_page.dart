@@ -1,10 +1,12 @@
 import 'dart:async';
 
+import 'package:doua/Utils/prefs.dart';
 import 'package:doua/utils.dart';
 import 'package:doua_uikit/doua_uikit.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'model/doua_user.dart';
 import 'viewmodel/login_viewmodel.dart';
 
@@ -19,6 +21,14 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final _loginViewModel = LoginViewModel();
+  late SharedPreferences prefs;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _loadData();
+  }
 
   Widget _divider() {
     return Container(
@@ -180,37 +190,10 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     return Scaffold(
-        body: Container(
-      height: height,
-      child: Stack(
-        children: <Widget>[
-          Positioned(
-              top: -height * .05,
-              right: -MediaQuery.of(context).size.width * .4,
-              child: Text("data")),
-          Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 10),
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    SizedBox(height: height * .12),
-                    _imgHeader(),
-                    SizedBox(height: 20),
-                    _title(),
-                    SizedBox(height: 20),
-                    _signStruture(),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    ));
+      body: _loginViewModel.isLoading != true
+          ? _body(height)
+          : Center(child: CircularProgressIndicator()),
+    );
   }
 
   Future<void> signIn(SignWith opc) async {
@@ -298,6 +281,46 @@ class _LoginPageState extends State<LoginPage> {
         DouaSpace.verticalSpaceSmall,
         _signOut(),
       ],
+    );
+  }
+
+  _loadData() async {
+    await _loginViewModel.checkUserLogged();
+    prefs   = await SharedPreferences.getInstance();
+    if (mounted) setState(() {});
+  }
+
+  _body(double height) {
+    return Container(
+      height: height,
+      child: Stack(
+        children: <Widget>[
+          Positioned(
+              top: -height * .05,
+              right: -MediaQuery.of(context).size.width * .4,
+              child: Text("data")),
+          Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 10),
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    SizedBox(height: height * .12),
+                    _imgHeader(),
+                    SizedBox(height: 20),
+                    _title(),
+                    SizedBox(height: 20),
+                    _signStruture(),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

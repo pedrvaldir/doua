@@ -1,13 +1,13 @@
 library doua_uikit;
 
-export 'src/components/doua_text';
-export 'src/components/doua_button';
+export 'src/components/doua_text.dart';
+export 'src/components/doua_image.dart';
+export 'src/components/doua_button.dart';
 export 'src/components/doua_input_field';
 export 'src/components/templates/tutorial.dart';
 export 'src/components/doua_header.dart';
 export 'src/components/doua_divider.dart';
 export 'src/components/doua_tag_title.dart';
-export 'src/components/doua_list_card.dart';
 export 'src/components/doua_avatar.dart';
 export 'src/components/doua_dialog_progress.dart';
 

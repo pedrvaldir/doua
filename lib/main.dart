@@ -1,6 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'Utils/prefs.dart';
 import 'home_page.dart';
+import 'show_case_initial_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,7 +22,7 @@ class DouaApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.green,
       ),
-      //home: ShowCaseInitialPage('Doua'),
+      // home: ShowCaseInitialPage('Doua'),
       home: HomePage('Doua'),
     );
   }

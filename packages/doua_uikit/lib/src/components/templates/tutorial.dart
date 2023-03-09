@@ -1,14 +1,26 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import '../../../doua_uikit.dart';
 import '../../shared/doua_sizes.dart';
 
 class TutorialSteps {
-  Widget icon;
-  String title;
-  String description;
+  late Uint8List imageBase64;
+  late Image image;
+  late String title;
+  late String description;
 
   TutorialSteps(
-      {required this.icon, required this.title, required this.description});
+      {required this.imageBase64,
+      required this.title,
+      required this.description});
+
+  TutorialSteps.fromMap(Map<dynamic, dynamic> map) {
+    image = Image.network(map['icon']);
+    title = map['titulo'];
+    description = map['descricao'];
+  }
 }
 
 class DouaTutorial {
@@ -227,7 +239,7 @@ class _BasisDouaTutorialState extends State<_BasisDouaTutorial> {
             _transformOnXAxisBy(
                 Padding(
                   padding: EdgeInsets.all(DouaSizes.spacing24),
-                  child: Container(height: 150, child: step.icon),
+                  child: Container(height: 150, child: step.image),
                 ),
                 2.0),
             SizedBox(

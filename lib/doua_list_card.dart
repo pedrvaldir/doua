@@ -1,16 +1,9 @@
+import 'package:doua/model/doua_acao.dart';
 import 'package:flutter/material.dart';
-
-class DouaCard {
-  final String title;
-  final String? subTitle;
-  final String? pathImg;
-
-  DouaCard({required this.title, this.pathImg, this.subTitle});
-}
 
 class DouaListCard extends StatelessWidget {
   String? title;
-  List<DouaCard> list;
+  List<DouaAcao> list;
 
   DouaListCard({
     Key? key,
@@ -32,7 +25,7 @@ class DouaListCard extends StatelessWidget {
         ));
   }
 
-  Widget _buildWidget(DouaCard item) {
+  Widget _buildWidget(DouaAcao item) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
@@ -41,13 +34,13 @@ class DouaListCard extends StatelessWidget {
             width: 80,
             child: Center(
                 child:
-                    Image.asset(item.pathImg != null ? item.pathImg! : 'null')),
+                    Image.network(item.urlImg != null ? item.urlImg! : 'null')),
           ),
           SizedBox(
             height: 8,
           ),
           Center(
-            child: Text(item.title),
+            child: Text(item.titulo!),
           ),
         ],
       ),

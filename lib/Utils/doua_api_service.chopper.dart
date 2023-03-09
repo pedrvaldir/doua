@@ -17,6 +17,40 @@ class _$DouaApiService extends DouaApiService {
   final definitionType = DouaApiService;
 
   @override
+  Future<Response<dynamic>> getOnboarding(
+      String authorization, String urlPath) {
+    final $url = '${urlPath}';
+    final $headers = {
+      'Authorization': authorization,
+    };
+
+    final $request = Request('GET', $url, client.baseUrl, headers: $headers);
+    return client.send<dynamic, dynamic>($request);
+  }
+
+  @override
+  Future<Response<dynamic>> getAcoes(String authorization, String urlPath) {
+    final $url = '${urlPath}';
+    final $headers = {
+      'Authorization': authorization,
+    };
+
+    final $request = Request('GET', $url, client.baseUrl, headers: $headers);
+    return client.send<dynamic, dynamic>($request);
+  }
+
+  @override
+  Future<Response<dynamic>> getLocals(String authorization, String urlPath) {
+    final $url = '${urlPath}';
+    final $headers = {
+      'Authorization': authorization,
+    };
+
+    final $request = Request('GET', $url, client.baseUrl, headers: $headers);
+    return client.send<dynamic, dynamic>($request);
+  }
+
+  @override
   Future<Response<dynamic>> loginGoogle(String authorization, String urlPath) {
     final $url = '${urlPath}';
     final $headers = {

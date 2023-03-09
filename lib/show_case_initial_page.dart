@@ -1,6 +1,7 @@
 import 'package:doua_uikit/doua_uikit.dart';
 import 'package:flutter/material.dart';
 
+import 'doua_list_card.dart';
 import 'doua_onboarding_page.dart';
 
 class ShowCaseInitialPage extends StatefulWidget {
@@ -24,6 +25,7 @@ class _ShowCaseInitialPageState extends State<ShowCaseInitialPage> {
           vertical_space_small(),
           Divider(),
           vertical_space_small(),
+          modalBottomSheet(context),
           ...buttonWidgets(context),
           ...textWidgets,
           ...inputFields,
@@ -31,6 +33,10 @@ class _ShowCaseInitialPageState extends State<ShowCaseInitialPage> {
       ),
     );
   }
+}
+
+Widget modalBottomSheet(BuildContext context) {
+  return Text("");
 }
 
 Widget vertical_space_small() {
@@ -48,7 +54,7 @@ List<Widget> get textWidgets => [
       verticalSpaceMedium(),
       DouaText.headingTwo('Heading Two'),
       verticalSpaceMedium(),
-      DouaText.headingThree('Heading Three'),
+      DouaText.headingTitle('Heading Title'),
       verticalSpaceMedium(),
       DouaText.headline('Headline'),
       verticalSpaceMedium(),
@@ -73,7 +79,7 @@ List<Widget> buttonWidgets(var context) => [
       DouaButton(
         title: 'TUTORIAL',
         onClick: () {
-          DouaOnboading(context).show(context);
+          //DouaOnboading(context, ).show(context);
         },
       ),
       vertical_space_small(),
@@ -108,9 +114,7 @@ List<Widget> buttonWidgets(var context) => [
 
 _listCards() {
   return [
-    DouaCard(title: "Roupas de frio", pathImg: 'assets/place-holder.png'),
-    DouaCard(title: "Prateleira", pathImg: 'assets/place-holder.png'),
-    DouaCard(title: "Porta", pathImg: 'assets/place-holder.png'),
+    {}
   ];
 }
 

@@ -11,8 +11,8 @@ const TextStyle heading2Style = TextStyle(
   fontWeight: FontWeight.w600,
 );
 
-const TextStyle heading3Style = TextStyle(
-    fontSize: 18,
+const TextStyle headingTitle = TextStyle(
+    fontSize: 23,
     fontWeight: FontWeight.w400,
     color: DouaPallet.kcDarkGreyColor);
 
@@ -29,6 +29,7 @@ const TextStyle bodyStyle = TextStyle(
 const TextStyle subheadingStyle = TextStyle(
   fontSize: 20,
   fontWeight: FontWeight.w400,
+    color: DouaPallet.kcDarkGreyColor
 );
 
 const TextStyle captionStyle = TextStyle(
