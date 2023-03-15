@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:doua_uikit/doua_uikit.dart';
 import 'package:flutter/material.dart';
+import 'package:location/location.dart';
 import 'doua_list_card.dart';
 import 'doua_onboarding_page.dart';
 

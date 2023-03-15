@@ -23,19 +23,20 @@ class _LocalsPageState extends State<LocalsPage> {
   int _markerIdCounter = 1;
   LatLng _initialcameraposition = LatLng(-25.500753, -49.238138);
   Set<Marker> _markers = HashSet<Marker>();
+  GoogleMapController? mapController;
   late List<DouaAcao> listAcoes = [];
   final _searchViewModel = SearchViewModel();
 
-  void _onMapCreated(GoogleMapController _cntlr) {
-    _controller = _controller;
-    location.onLocationChanged.listen((l) {
-      // _controller!.animateCamera(
-      //   CameraUpdate.newCameraPosition(
-      //     CameraPosition(target: LatLng(l.latitude!, l.longitude!), zoom: 15),
-      //   ),
-      // );
-    });
-  }
+  // void _onMapCreated(GoogleMapController _cntlr) {
+  //   _controller = _controller;
+  //   location.onLocationChanged.listen((l) {
+  //     _controller!.animateCamera(
+  //       CameraUpdate.newCameraPosition(
+  //         CameraPosition(target: LatLng(l.latitude!, l.longitude!), zoom: 15),
+  //       ),
+  //     );
+  //   });
+  // }
 
   @override
   void initState() {
@@ -50,10 +51,13 @@ class _LocalsPageState extends State<LocalsPage> {
         home: Scaffold(
       body: Stack(children: <Widget>[
         GoogleMap(
-            onMapCreated: _onMapCreated,
+            onMapCreated: (controller) {
+                    setState(() {
+                      mapController = controller; 
+                    });
+                  },
             initialCameraPosition: CameraPosition(
               target: _initialcameraposition,
-              //target: LatLng(-20.131886, -47.484488),
               zoom: 13,
             ),
             markers: getmarkers(),
@@ -120,16 +124,23 @@ class _LocalsPageState extends State<LocalsPage> {
     _currentPosition = await location.getLocation();
     _initialcameraposition =
         LatLng(_currentPosition!.latitude!, _currentPosition!.longitude!);
-    location.onLocationChanged.listen((LocationData currentLocation) {
-      print("${currentLocation.longitude} : ${currentLocation.longitude}");
-      if (mounted) {
-        setState(() {
-          _currentPosition = currentLocation;
-          _initialcameraposition =
-              LatLng(_currentPosition!.latitude!, _currentPosition!.longitude!);
-        });
-      }
-    });
+
+        mapController?.animateCamera( 
+                          CameraUpdate.newCameraPosition(
+                                CameraPosition(target: _initialcameraposition, zoom: 13) 
+                                //17 is new zoom level
+                          )
+                        );
+    // location.onLocationChanged.listen((LocationData currentLocation) {
+    //   print("${currentLocation.longitude} : ${currentLocation.longitude}");
+    //   if (mounted) {
+    //     setState(() {
+    //       _currentPosition = currentLocation;
+    //       _initialcameraposition =
+    //           LatLng(_currentPosition!.latitude!, _currentPosition!.longitude!);
+    //     });
+    //   }
+    // });
   }
 
   void _setMarkers(LatLng point) {
@@ -330,8 +341,12 @@ class _LocalsPageState extends State<LocalsPage> {
   }
 
   _loadLocals() async {
-    listAcoes = await _searchViewModel.getAcoes();
     getLoc();
+    listAcoes = await _searchViewModel.getAcoes();
+   if (!mounted) return;
+   setState(() {
+     
+   });
   }
 
   Container buildTest() {
