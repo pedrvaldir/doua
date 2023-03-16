@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 
 import 'doua_list_card.dart';
 import 'doua_onboarding_page.dart';
+import 'model/doua_acao.dart';
+import 'model/doua_localizacao.dart';
 
 class ShowCaseInitialPage extends StatefulWidget {
   final String title;
@@ -113,9 +115,11 @@ List<Widget> buttonWidgets(var context) => [
     ];
 
 _listCards() {
-  return [
-    {}
-  ];
+  List<DouaAcao> acoes = [
+    DouaAcao(titulo: "titulo", id:2, urlImg: "https://picsum.photos/250?image=9", descricao:"",localizacao: DouaLocalizacao(id:1, latitude:1.00, longitude:2.00), idTipoAcao: 1, qtdVotos:2),
+    DouaAcao(titulo: "titulo", id:2, urlImg: "https://picsum.photos/250?image=12", descricao:"",localizacao: DouaLocalizacao(id:1, latitude:1.00, longitude:2.00), idTipoAcao: 1, qtdVotos:2)];
+
+  return acoes;
 }
 
 List<Widget> get inputFields => [

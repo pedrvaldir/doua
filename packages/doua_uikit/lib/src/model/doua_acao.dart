@@ -10,7 +10,7 @@ class DouaAcao {
   late int? idTipoAcao;
   late int? qtdVotos;
 
-  DouaAcao( {this.id, this.titulo, this.urlImg, this.descricao, this.localizacao, this.idTipoAcao, this.qtdVotos});
+  DouaAcao({this.id, this.titulo, this.urlImg, this.descricao, this.localizacao, this.idTipoAcao, this.qtdVotos});
 
    DouaAcao.fromMap(Map<dynamic, dynamic> map){
     id = map['id'];

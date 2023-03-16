@@ -22,8 +22,8 @@ class DouaApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.green,
       ),
-      // home: ShowCaseInitialPage('Doua'),
-      home: HomePage('Doua'),
+      home: ShowCaseInitialPage('Doua'),
+     // home: HomePage('Doua'),
     );
   }
 }
