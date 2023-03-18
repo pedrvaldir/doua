@@ -286,7 +286,7 @@ class _LoginPageState extends State<LoginPage> {
 
   _loadData() async {
     await _loginViewModel.checkUserLogged();
-    prefs   = await SharedPreferences.getInstance();
+    prefs = await SharedPreferences.getInstance();
     if (mounted) setState(() {});
   }
 

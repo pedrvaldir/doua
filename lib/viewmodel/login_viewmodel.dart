@@ -38,6 +38,7 @@ class LoginViewModel {
     try {
       apiReponse = await DaoLogin().signOut();
       user = DouaUser();
+      await removeDataPref();
       isLogged = false;
     } on Exception catch (_) {
       apiReponse = ApiResponse(404, error: "Exception");
@@ -49,6 +50,10 @@ class LoginViewModel {
 
   addDataPref(DouaUser user) async {
     Prefs().writeNameAndUser(user);
+  }
+
+  removeDataPref() async {
+    Prefs().getRemove();
   }
 
   checkUserLogged() async {

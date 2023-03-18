@@ -39,11 +39,14 @@ class DaoLogin {
 
   Future<ApiResponse> signIn(SignWith sign) async {
     User response = await handleAutenticateResponse(sign);
-
-    if (response.isAnonymous || response.displayName != null) {
-      return ApiResponse(202, data: response);
-    } else {
-      return ApiResponse(response.hashCode, data: response.hashCode);
+    try {
+      if (response.isAnonymous || response.displayName != null) {
+        return ApiResponse(202, data: response);
+      } else {
+        return ApiResponse(response.hashCode, data: response.hashCode);
+      }
+    } catch (e) {
+      return ApiResponse(404);
     }
   }
 
@@ -54,13 +57,18 @@ class DaoLogin {
 
   handleAutenticateResponse(SignWith sign) async {
     UserCredential response;
-    switch (sign) {
-      case SignWith.FACEBOOK:
-        response = await signInWithFacebook();
-        break;
-      case SignWith.GOOGLE:
-        response = await signInWithGoogle();
+    try {
+      switch (sign) {
+        case SignWith.FACEBOOK:
+          response = await signInWithFacebook();
+          break;
+        case SignWith.GOOGLE:
+          response = await signInWithGoogle();
+      }
+    } catch (e) {
+      throw Exception(404);
     }
+
     return response.user;
   }
 }

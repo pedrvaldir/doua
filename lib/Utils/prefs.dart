@@ -28,6 +28,13 @@ class Prefs {
     return prefs.getString("Name");
   }
 
+  getRemove() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove("name");
+    prefs.remove("email");
+    prefs.remove("photoUrl");
+  }
+
   isUserLogged() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -38,11 +45,10 @@ class Prefs {
   getUser() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return DouaUser(
-      name: prefs.getString('name'),
-      email: prefs.getString('email'),
-      uid: prefs.getString('uid'),
-      photoUrl: prefs.getString('photoUrl')
-    );
+        name: prefs.getString('name'),
+        email: prefs.getString('email'),
+        uid: prefs.getString('uid'),
+        photoUrl: prefs.getString('photoUrl'));
   }
 
   // rememberUser(String pass, String mail) async {

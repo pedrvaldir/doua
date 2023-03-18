@@ -27,17 +27,6 @@ class _LocalsPageState extends State<LocalsPage> {
   late List<DouaAcao> listAcoes = [];
   final _searchViewModel = SearchViewModel();
 
-  // void _onMapCreated(GoogleMapController _cntlr) {
-  //   _controller = _controller;
-  //   location.onLocationChanged.listen((l) {
-  //     _controller!.animateCamera(
-  //       CameraUpdate.newCameraPosition(
-  //         CameraPosition(target: LatLng(l.latitude!, l.longitude!), zoom: 15),
-  //       ),
-  //     );
-  //   });
-  // }
-
   @override
   void initState() {
     super.initState();
@@ -51,11 +40,12 @@ class _LocalsPageState extends State<LocalsPage> {
         home: Scaffold(
       body: Stack(children: <Widget>[
         GoogleMap(
+          
             onMapCreated: (controller) {
-                    setState(() {
-                      mapController = controller; 
-                    });
-                  },
+              setState(() {
+                mapController = controller;
+              });
+            },
             initialCameraPosition: CameraPosition(
               target: _initialcameraposition,
               zoom: 13,
@@ -63,10 +53,11 @@ class _LocalsPageState extends State<LocalsPage> {
             markers: getmarkers(),
             mapType: MapType.normal,
             myLocationEnabled: true,
-            onTap: (point) {
-              _markers.clear();
-              _setMarkers(point);
-            }),
+            // onTap: (point) {
+            //   _markers.clear();
+            //   _setMarkers(point);
+            // }
+            ),
       ]),
     ));
   }
@@ -83,16 +74,16 @@ class _LocalsPageState extends State<LocalsPage> {
               snippet: acao.descricao,
               onTap: () {
                 showModalBottomSheet(
-            context: context,
-            builder: (context) => buildSheet(acao),
-            isScrollControlled: true,
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.vertical(
-                top: Radius.circular(40),
-              ),
-            ),
-            backgroundColor: Colors.transparent,
-          );
+                  context: context,
+                  builder: (context) => buildSheet(acao),
+                  isScrollControlled: true,
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(40),
+                    ),
+                  ),
+                  backgroundColor: Colors.transparent,
+                );
               }),
           icon: BitmapDescriptor.defaultMarker,
         ));
@@ -125,12 +116,10 @@ class _LocalsPageState extends State<LocalsPage> {
     _initialcameraposition =
         LatLng(_currentPosition!.latitude!, _currentPosition!.longitude!);
 
-        mapController?.animateCamera( 
-                          CameraUpdate.newCameraPosition(
-                                CameraPosition(target: _initialcameraposition, zoom: 13) 
-                                //17 is new zoom level
-                          )
-                        );
+    mapController?.animateCamera(CameraUpdate.newCameraPosition(
+        CameraPosition(target: _initialcameraposition, zoom: 13)
+        //17 is new zoom level
+        ));
     // location.onLocationChanged.listen((LocationData currentLocation) {
     //   print("${currentLocation.longitude} : ${currentLocation.longitude}");
     //   if (mounted) {
@@ -199,23 +188,26 @@ class _LocalsPageState extends State<LocalsPage> {
               padding: const EdgeInsets.only(bottom: 20.0, top: 0),
               child: Center(
                   child: DouaImage(
-                    url: acao.urlImg,
+                url: acao.urlImg,
                 height: MediaQuery.of(context).size.height * 0.15,
               )),
             ),
             DouaText.body(acao.descricao!),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              textDirection: TextDirection.rtl,
-              children: [
-                IconButton(
-                  icon: Icon(Icons.favorite),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                ),
-                DouaText.subheading(acao.qtdVotos.toString()),
-              ],
+            Container(
+              height: 18,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                textDirection: TextDirection.rtl,
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.favorite),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                  DouaText.subheading(acao.qtdVotos.toString()),
+                ],
+              ),
             )
           ],
         ),
@@ -247,7 +239,7 @@ class _LocalsPageState extends State<LocalsPage> {
                     children: [
                       Flexible(
                         child: DouaText.headingTitle(acao.titulo!),
-                        flex: 1,
+                        flex: 2,
                       ),
                       Flexible(
                         child: IconButton(
@@ -343,10 +335,8 @@ class _LocalsPageState extends State<LocalsPage> {
   _loadLocals() async {
     getLoc();
     listAcoes = await _searchViewModel.getAcoes();
-   if (!mounted) return;
-   setState(() {
-     
-   });
+    if (!mounted) return;
+    setState(() {});
   }
 
   Container buildTest() {
