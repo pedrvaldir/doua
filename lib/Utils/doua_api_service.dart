@@ -4,26 +4,25 @@ part 'doua_api_service.chopper.dart';
 
 @ChopperApi(baseUrl: '')
 abstract class DouaApiService extends ChopperService {
-
   @Get(path: "{urlPath}")
   Future<Response> getOnboarding(
-      @Header('Authorization') String authorization,
-      @Path() String urlPath);
+      @Header('Authorization') String authorization, @Path() String urlPath);
 
-      @Get(path: "{urlPath}")
+  @Get(path: "{urlPath}")
   Future<Response> getAcoes(
-      @Header('Authorization') String authorization,
-      @Path() String urlPath);
+      @Header('Authorization') String authorization, @Path() String urlPath);
 
-     @Get(path: "{urlPath}")
+  @Post(path: "{urlPath}")
+  Future<Response> postAcoes(@Header('Authorization') String authorization,
+      @Body() Map<String, dynamic> body, @Path() String urlPath);
+
+  @Get(path: "{urlPath}")
   Future<Response> getLocals(
-      @Header('Authorization') String authorization,
-      @Path() String urlPath);
+      @Header('Authorization') String authorization, @Path() String urlPath);
 
   @Get(path: "{urlPath}")
   Future<Response> loginGoogle(
-      @Header('Authorization') String authorization,
-      @Path() String urlPath);
+      @Header('Authorization') String authorization, @Path() String urlPath);
 
   static DouaApiService create() {
     final client = ChopperClient(

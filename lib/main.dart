@@ -1,12 +1,12 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'Utils/prefs.dart';
-import 'home_page.dart';
+import 'view/home_page.dart';
 import 'show_case_initial_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+ // await Firebase.initializeApp();
   runApp(DouaApp());
 }
 

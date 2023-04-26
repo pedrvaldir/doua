@@ -10,4 +10,11 @@ class DouaLocalizacao {
     latitude = map['latitude'];
     longitude = map['longitude'];
   }
+
+  Map<String, dynamic> toPutMapServidor() {
+    return {
+      'latitude': latitude,
+      'longitude': longitude,
+    };
+  }
 }

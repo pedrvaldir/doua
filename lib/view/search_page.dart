@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:doua/view/doua_dialog_add.dart';
 import 'package:doua_uikit/doua_uikit.dart';
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
@@ -9,10 +10,10 @@ import 'doua_onboarding_page.dart';
 import 'package:doua/utils.dart';
 
 import 'locals_page.dart';
-import 'model/doua_acao.dart';
-import 'viewmodel/home_viewmodel.dart';
-import 'viewmodel/login_viewmodel.dart';
-import 'viewmodel/search_viewmodel.dart';
+import '../model/doua_acao.dart';
+import '../viewmodel/home_viewmodel.dart';
+import '../viewmodel/login_viewmodel.dart';
+import '../viewmodel/search_viewmodel.dart';
 
 class SearchPage extends StatefulWidget {
   final String title;
@@ -35,13 +36,17 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   void initState() {
-    _loadList();
     super.initState();
+    Future.delayed(Duration.zero, () {
+      this._loadList();
+    });
   }
 
   _loadList() async {
+    DouaDialogProgress.showLoading(context, false, "Carregando informações");
     await _loginViewModel.checkUserLogged();
     acoes = await _searchViewModel.getAcoes();
+    Navigator.pop(context);
     if (mounted) setState(() {});
   }
 
@@ -67,26 +72,40 @@ class _SearchPageState extends State<SearchPage> {
               Padding(
                 padding: const EdgeInsets.only(
                     left: DouaSizes.spacing20, right: DouaSizes.spacing20),
-                child: DouaTagTitle(
-                  title: Strings.TITLE_DONOR,
-                  iconDoua: Icons.add,
-                  isRight: true,
+                child: GestureDetector(
+                  onTap: () {
+                    Constants.TYPE_DONOR = true;
+                    DouaDialogAcao.showInclude(context);
+                  },
+                  child: DouaTagTitle(
+                    title: Strings.TITLE_DONOR,
+                    iconDoua: Icons.add,
+                    isRight: true,
+                  ),
                 ),
               ),
               DouaListCard(
-                  list: acoes.where((i) => i.idTipoAcao == 1).toList()),
+                  list:
+                      acoes.reversed.where((i) => i.idTipoAcao == 2).toList()),
               DouaSpace.horizontalSpaceSmall,
               Padding(
                 padding: const EdgeInsets.only(
                     left: DouaSizes.spacing20, right: DouaSizes.spacing20),
-                child: DouaTagTitle(
-                  title: Strings.TITLE_GRANTEES,
-                  iconDoua: Icons.add,
-                  isRight: true,
+                child: GestureDetector(
+                  onTap: () {
+                    Constants.TYPE_DONOR = false;
+                    DouaDialogAcao.showInclude(context);
+                  },
+                  child: DouaTagTitle(
+                    title: Strings.TITLE_GRANTEES,
+                    iconDoua: Icons.add,
+                    isRight: true,
+                  ),
                 ),
               ),
               DouaListCard(
-                  list: acoes.where((i) => i.idTipoAcao != 1).toList()),
+                  list:
+                      acoes.reversed.where((i) => i.idTipoAcao != 2).toList()),
             ],
           ),
         ),
@@ -102,7 +121,7 @@ class _SearchPageState extends State<SearchPage> {
 
   getName() {
     if (_loginViewModel.isLogged && _loginViewModel.user.name != null)
-      return _loginViewModel.user.name.toString() +"\n";
+      return _loginViewModel.user.name.toString() + "\n";
     else
       return "";
   }

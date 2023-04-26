@@ -45,4 +45,26 @@ class SearchViewModel {
     _streamController.add(false);
     return listAcoes;
   }
+
+  Future<List<DouaAcao>> postAcao(DouaAcao acao) async {
+    _streamController.add(true);
+    isLogged = true;
+    ApiResponse apiReponse;
+    try {
+      apiReponse = await DaoSearch().postAcoes(acao);
+
+      if (apiReponse.data != null) {
+        List<dynamic> data = apiReponse.data;
+
+        return listAcoes;
+      }
+    } on Exception catch (e) {
+      print(e);
+
+      apiReponse = ApiResponse(404, error: "Exception");
+    }
+    isLogged = false;
+    _streamController.add(false);
+    return listAcoes;
+  }
 }

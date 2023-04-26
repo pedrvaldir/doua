@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:doua/api_response.dart';
-import 'package:doua/search_page.dart';
+import 'package:doua/view/search_page.dart';
 import 'package:doua_uikit/doua_uikit.dart';
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
@@ -9,8 +9,8 @@ import 'package:lottie/lottie.dart';
 import 'doua_onboarding_page.dart';
 import 'locals_page.dart';
 import 'login_page.dart';
-import 'viewmodel/home_viewmodel.dart';
-import 'viewmodel/login_viewmodel.dart';
+import '../viewmodel/home_viewmodel.dart';
+import '../viewmodel/login_viewmodel.dart';
 
 class HomePage extends StatefulWidget {
   final String title;

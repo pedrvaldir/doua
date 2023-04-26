@@ -11,7 +11,7 @@ class DouaDialogProgress {
           return new WillPopScope(
               onWillPop: () async => false,
               child: SimpleDialog(
-                  backgroundColor: DouaPallet.kcPrimaryColor,
+                  backgroundColor: DouaPallet.kcLightGreyColor,
                   children: <Widget>[
                     Center(
                       child: Column(children: [

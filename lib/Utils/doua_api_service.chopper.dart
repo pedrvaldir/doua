@@ -40,6 +40,20 @@ class _$DouaApiService extends DouaApiService {
   }
 
   @override
+  Future<Response<dynamic>> postAcoes(
+      String authorization, Map<String, dynamic> body, String urlPath) {
+    final $url = '${urlPath}';
+    final $headers = {
+      'Authorization': authorization,
+    };
+
+    final $body = body;
+    final $request =
+        Request('POST', $url, client.baseUrl, body: $body, headers: $headers);
+    return client.send<dynamic, dynamic>($request);
+  }
+
+  @override
   Future<Response<dynamic>> getLocals(String authorization, String urlPath) {
     final $url = '${urlPath}';
     final $headers = {

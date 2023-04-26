@@ -1,13 +1,15 @@
 import 'dart:collection';
 
 import 'package:doua/model/doua_acao.dart';
+import 'package:doua/model/doua_comentario.dart';
 import 'package:doua_uikit/doua_uikit.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 
-import 'Utils/sliver_appbar_delegate.dart';
-import 'viewmodel/search_viewmodel.dart';
+import '../Utils/sliver_appbar_delegate.dart';
+import '../viewmodel/search_viewmodel.dart';
+import 'doua_dialog_add.dart';
 
 class LocalsPage extends StatefulWidget {
   const LocalsPage({Key? key}) : super(key: key);
@@ -17,7 +19,6 @@ class LocalsPage extends StatefulWidget {
 }
 
 class _LocalsPageState extends State<LocalsPage> {
-  GoogleMapController? _controller;
   Location location = Location();
   LocationData? _currentPosition;
   int _markerIdCounter = 1;
@@ -31,7 +32,9 @@ class _LocalsPageState extends State<LocalsPage> {
   void initState() {
     super.initState();
 
-    _loadLocals();
+    Future.delayed(Duration.zero, () {
+      this._loadLocals();
+    });
   }
 
   @override
@@ -40,25 +43,21 @@ class _LocalsPageState extends State<LocalsPage> {
         home: Scaffold(
       body: Stack(children: <Widget>[
         GoogleMap(
-          
-            onMapCreated: (controller) {
-              setState(() {
-                mapController = controller;
-              });
-            },
-            initialCameraPosition: CameraPosition(
-              target: _initialcameraposition,
-              zoom: 13,
-            ),
-            markers: getmarkers(),
-            mapType: MapType.normal,
-            myLocationEnabled: true,
-            // onTap: (point) {
-            //   _markers.clear();
-            //   _setMarkers(point);
-            // }
-            ),
+          onMapCreated: (controller) {
+            setState(() {
+              mapController = controller;
+            });
+          },
+          initialCameraPosition: CameraPosition(
+            target: _initialcameraposition,
+            zoom: 17,
+          ),
+          markers: getmarkers(),
+          mapType: MapType.normal,
+          myLocationEnabled: true,
+        ),
       ]),
+      floatingActionButton: _addAcao(),
     ));
   }
 
@@ -118,18 +117,7 @@ class _LocalsPageState extends State<LocalsPage> {
 
     mapController?.animateCamera(CameraUpdate.newCameraPosition(
         CameraPosition(target: _initialcameraposition, zoom: 13)
-        //17 is new zoom level
         ));
-    // location.onLocationChanged.listen((LocationData currentLocation) {
-    //   print("${currentLocation.longitude} : ${currentLocation.longitude}");
-    //   if (mounted) {
-    //     setState(() {
-    //       _currentPosition = currentLocation;
-    //       _initialcameraposition =
-    //           LatLng(_currentPosition!.latitude!, _currentPosition!.longitude!);
-    //     });
-    //   }
-    // });
   }
 
   void _setMarkers(LatLng point) {
@@ -279,8 +267,8 @@ class _LocalsPageState extends State<LocalsPage> {
           SliverList(
             delegate: SliverChildBuilderDelegate(
               (BuildContext context, int index) {
-                if (index != 4 - 1) {
-                  return WidgetComment();
+                if (index != acao.comentarios) {
+                  return WidgetComment(acao.comentarios![index]);
                 } else
                   return Container(
                     height: 30,
@@ -292,7 +280,7 @@ class _LocalsPageState extends State<LocalsPage> {
                     ),
                   );
               },
-              childCount: 4,
+              childCount: acao.comentarios!.length,
             ),
           ),
         ],
@@ -300,7 +288,7 @@ class _LocalsPageState extends State<LocalsPage> {
     );
   }
 
-  Padding WidgetComment() {
+  Padding WidgetComment(DouaComentario comentarios) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8.0),
       child: Container(
@@ -308,7 +296,7 @@ class _LocalsPageState extends State<LocalsPage> {
           child: Row(
             children: [
               Flexible(
-                child: DouaAvatar(),
+                child: DouaAvatar(url: comentarios.criador!.photoUrl),
                 flex: 1,
               ),
               Flexible(
@@ -317,10 +305,10 @@ class _LocalsPageState extends State<LocalsPage> {
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("Roberto"),
+                        Text(comentarios.criador!.name!),
                       ],
                     ),
-                    Text("Lorem lepsum, lorem depsun"),
+                    Text(comentarios.descricao!),
                   ],
                 ),
                 flex: 1,
@@ -333,21 +321,23 @@ class _LocalsPageState extends State<LocalsPage> {
   }
 
   _loadLocals() async {
+    DouaDialogProgress.showLoading(context, false, "Carregando informações");
     getLoc();
     listAcoes = await _searchViewModel.getAcoes();
+    Navigator.pop(context);
     if (!mounted) return;
     setState(() {});
   }
 
-  Container buildTest() {
-    return Container(
-      color: Colors.blue[100],
-      child: ListView.builder(
-        itemCount: 25,
-        itemBuilder: (BuildContext context, int index) {
-          return ListTile(title: Text('Item $index'));
-        },
-      ),
+  _addAcao() {
+    return FloatingActionButton(
+      child: Icon(Icons.add),
+      backgroundColor: Theme.of(context).primaryColor,
+      foregroundColor: Colors.white,
+      onPressed: () {
+        print('Clicked');
+        DouaDialogAcao.showInclude(context);
+      },
     );
   }
 }

@@ -1,8 +1,8 @@
 import 'package:doua_uikit/doua_uikit.dart';
 import 'package:flutter/material.dart';
 
-import 'doua_list_card.dart';
-import 'doua_onboarding_page.dart';
+import 'view/doua_list_card.dart';
+import 'view/doua_onboarding_page.dart';
 import 'model/doua_acao.dart';
 import 'model/doua_localizacao.dart';
 

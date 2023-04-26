@@ -7,8 +7,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'model/doua_user.dart';
-import 'viewmodel/login_viewmodel.dart';
+import '../model/doua_user.dart';
+import '../viewmodel/login_viewmodel.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key? key, this.title}) : super(key: key);
