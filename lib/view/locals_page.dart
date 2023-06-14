@@ -27,6 +27,10 @@ class _LocalsPageState extends State<LocalsPage> {
   GoogleMapController? mapController;
   late List<DouaAcao> listAcoes = [];
   final _searchViewModel = SearchViewModel();
+  var _controller = TextEditingController();
+  final TextEditingController _textFieldController = TextEditingController();
+  String? codeDialog;
+  String? valueText;
 
   @override
   void initState() {
@@ -62,30 +66,10 @@ class _LocalsPageState extends State<LocalsPage> {
   }
 
   Set<Marker> getmarkers() {
+    var acao = null;
     setState(() {
-      for (var acao in listAcoes) {
-        _markers.add(Marker(
-          markerId: MarkerId(acao.id.toString()),
-          position:
-              LatLng(acao.localizacao!.latitude!, acao.localizacao!.longitude!),
-          infoWindow: InfoWindow(
-              title: acao.titulo,
-              snippet: acao.descricao,
-              onTap: () {
-                showModalBottomSheet(
-                  context: context,
-                  builder: (context) => buildSheet(acao),
-                  isScrollControlled: true,
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.vertical(
-                      top: Radius.circular(40),
-                    ),
-                  ),
-                  backgroundColor: Colors.transparent,
-                );
-              }),
-          icon: BitmapDescriptor.defaultMarker,
-        ));
+      for (DouaAcao acao in listAcoes) {
+        _markers.add(_addMarker(acao));
       }
     });
     return _markers;
@@ -116,8 +100,7 @@ class _LocalsPageState extends State<LocalsPage> {
         LatLng(_currentPosition!.latitude!, _currentPosition!.longitude!);
 
     mapController?.animateCamera(CameraUpdate.newCameraPosition(
-        CameraPosition(target: _initialcameraposition, zoom: 13)
-        ));
+        CameraPosition(target: _initialcameraposition, zoom: 13)));
   }
 
   void _setMarkers(LatLng point) {
@@ -146,7 +129,8 @@ class _LocalsPageState extends State<LocalsPage> {
         ),
       );
 
-  Widget buildSheet(DouaAcao acao) => makeDismisssible(
+  Widget buildSheet(List<DouaComentario> list, DouaAcao acao) =>
+      makeDismisssible(
           child: Padding(
         padding: const EdgeInsets.only(left: 16.0, right: 16.0),
         child: DraggableScrollableSheet(
@@ -156,7 +140,7 @@ class _LocalsPageState extends State<LocalsPage> {
           builder: (BuildContext context, ScrollController scrollController) {
             return Container(
               color: DouaPallet.kcVeryLightGreyColor,
-              child: customScrollView(scrollController, acao),
+              child: customScrollView(scrollController, list, acao),
             );
           },
         ),
@@ -166,44 +150,43 @@ class _LocalsPageState extends State<LocalsPage> {
     return Padding(
       padding: const EdgeInsets.only(
           left: DouaSizes.spacing4, right: DouaSizes.spacing4),
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(bottom: 20.0, top: 0),
-              child: Center(
-                  child: DouaImage(
-                url: acao.urlImg,
-                height: MediaQuery.of(context).size.height * 0.15,
-              )),
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Center(
+              child: DouaImage(
+            base64: acao.urlImg,
+            height: 200,
+          )),
+          Padding(
+            padding: const EdgeInsets.only(top: 8),
+            child: DouaText.headingTitle(acao.descricao!),
+          ),
+          Container(
+            height: 40,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.max,
+              textDirection: TextDirection.rtl,
+              children: [
+                IconButton(
+                  icon: Icon(Icons.favorite),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+                DouaText.subheading(acao.qtdVotos.toString()),
+              ],
             ),
-            DouaText.body(acao.descricao!),
-            Container(
-              height: 18,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                textDirection: TextDirection.rtl,
-                children: [
-                  IconButton(
-                    icon: Icon(Icons.favorite),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  ),
-                  DouaText.subheading(acao.qtdVotos.toString()),
-                ],
-              ),
-            )
-          ],
-        ),
+          )
+        ],
       ),
     );
   }
 
-  customScrollView(ScrollController _controller, DouaAcao acao) {
+  customScrollView(
+      ScrollController _controller, List<DouaComentario> list, DouaAcao acao) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: CustomScrollView(
@@ -214,7 +197,7 @@ class _LocalsPageState extends State<LocalsPage> {
             shadowColor: DouaPallet.kcVeryLightGreyColor,
             pinned: true,
             elevation: 2,
-            toolbarHeight: MediaQuery.of(context).size.height * 0.5,
+            toolbarHeight: MediaQuery.of(context).size.height * 0.52,
             automaticallyImplyLeading: false,
             floating: false,
             flexibleSpace: FlexibleSpaceBar(
@@ -226,7 +209,8 @@ class _LocalsPageState extends State<LocalsPage> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Flexible(
-                        child: DouaText.headingTitle(acao.titulo!),
+                        child:
+                            DouaText.headingTitle(acao.titulo!.toUpperCase()),
                         flex: 2,
                       ),
                       Flexible(
@@ -259,38 +243,102 @@ class _LocalsPageState extends State<LocalsPage> {
                       child: Row(
                     children: [
                       Icon(Icons.comment_rounded),
-                      Text("Comentários "),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 16.0),
+                        child: DouaText.subheading("Comentários "),
+                      ),
                     ],
                   ))),
             )),
           ),
           SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (BuildContext context, int index) {
-                if (index != acao.comentarios) {
-                  return WidgetComment(acao.comentarios![index]);
-                } else
-                  return Container(
-                    height: 30,
-                    color: Colors.white,
-                    child: Row(
-                      children: [
-                        DouaText.body("Adicionar Comentário"),
-                      ],
-                    ),
-                  );
-              },
-              childCount: acao.comentarios!.length,
-            ),
-          ),
+            delegate:
+                SliverChildBuilderDelegate((BuildContext context, int index) {
+              return Column(
+                children: [
+                  index < list.length
+                      ? WidgetComment(list[index])
+                      : SizedBox.fromSize(),
+                  if (index == list.length - 1 ||
+                      (index == 0 && list.length == 0))
+                    widgetAddComentario(context, acao.id),
+                ],
+              );
+            }, childCount: list.length == 0 ? 1 : list.length),
+          )
         ],
       ),
     );
   }
 
+  widgetAddComentario(BuildContext context, int? id) {
+    return GestureDetector(
+      onTap: () async {
+        await _displayTextInputDialog(context, id);
+        await getLoc();
+        await getmarkers();
+        setState(() {});
+      },
+      child: Padding(
+        padding: const EdgeInsets.only(top: 20),
+        child: Container(
+          height: 40,
+          color: DouaPallet.kcLightGreyColor,
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 8),
+                child: DouaText.body("Adicionar Comentário"),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _displayTextInputDialog(BuildContext context, int? acao) async {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Comentário'),
+            content: TextField(
+              onChanged: (value) {
+                setState(() {
+                  valueText = value;
+                });
+              },
+              controller: _textFieldController,
+              decoration: InputDecoration(hintText: "Adicionar"),
+            ),
+            actions: <Widget>[
+              MaterialButton(
+                color: Colors.green,
+                textColor: Colors.white,
+                child: Text('Salvar'),
+                onPressed: () async {
+                  bool result =
+                      await _searchViewModel.postComentario(valueText!, acao!);
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                  if (result) {
+                    valueText = "";
+                    _textFieldController.clear();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("Comentário incluido")));
+                  }
+                },
+              ),
+            ],
+          );
+        });
+  }
+
   Padding WidgetComment(DouaComentario comentarios) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8.0),
+      padding: const EdgeInsets.only(bottom: 12.0),
       child: Container(
           height: 50,
           child: Row(
@@ -308,7 +356,11 @@ class _LocalsPageState extends State<LocalsPage> {
                         Text(comentarios.criador!.name!),
                       ],
                     ),
-                    Text(comentarios.descricao!),
+                    Row(
+                      children: [
+                        DouaText.body(comentarios.descricao!),
+                      ],
+                    ),
                   ],
                 ),
                 flex: 1,
@@ -338,6 +390,41 @@ class _LocalsPageState extends State<LocalsPage> {
         print('Clicked');
         DouaDialogAcao.showInclude(context);
       },
+    );
+  }
+
+  getComentarios(String idAcao) {
+    return _searchViewModel.getComentarios(idAcao);
+  }
+
+  Marker _addMarker(DouaAcao acao) {
+    final MarkerId markerId = MarkerId(acao.id.toString());
+    return Marker(
+      markerId: markerId,
+      position:
+          LatLng(acao.localizacao!.latitude!, acao.localizacao!.longitude!),
+      infoWindow: InfoWindow(
+          title: acao.titulo,
+          snippet: acao.descricao,
+          onTap: () async {
+            _onTapMarker(markerId, acao);
+          }),
+      icon: BitmapDescriptor.defaultMarker,
+    );
+  }
+
+  void _onTapMarker(MarkerId markerId, DouaAcao acao) async {
+    List<DouaComentario> list = await getComentarios(markerId.value.toString());
+    showModalBottomSheet(
+      context: context,
+      builder: (context) => buildSheet(list, acao),
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(40),
+        ),
+      ),
+      backgroundColor: Colors.transparent,
     );
   }
 }

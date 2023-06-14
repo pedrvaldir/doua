@@ -1,4 +1,5 @@
 import 'package:doua/model/doua_acao.dart';
+import 'package:doua_uikit/doua_uikit.dart';
 import 'package:flutter/material.dart';
 
 class DouaListCard extends StatelessWidget {
@@ -27,14 +28,13 @@ class DouaListCard extends StatelessWidget {
 
   Widget _buildWidget(DouaAcao item) {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(4.0),
       child: Column(
         children: [
           Container(
             width: 80,
-            child: Center(
-                child:
-                    Image.network(item.urlImg != null ? item.urlImg! : 'null')),
+            height: 100,
+            child: Center(child: DouaImage(base64: item.urlImg)),
           ),
           SizedBox(
             height: 8,

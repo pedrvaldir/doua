@@ -27,6 +27,9 @@ dependencies:
   firebase_auth: ^3.1.4
   firebase_core: ^1.8.0
   shared_preferences: ^2.0.16
+  multi_image_picker: ^4.6.4
+  image: ^4.0.17
+  permission_handler: ^10.2.0
   location: ^4.4.0
   flutter:
     sdk: flutter

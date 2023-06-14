@@ -1,15 +1,23 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:doua/model/doua_acao.dart';
 import 'package:doua/model/doua_localizacao.dart';
+import 'package:doua/view/doua_dialog_add.dart';
 import 'package:doua/view/home_page.dart';
 import 'package:doua_uikit/doua_uikit.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
-
+import 'package:multi_image_picker/multi_image_picker.dart';
+import 'package:permission_handler/permission_handler.dart' as permission;
 import '../utils.dart';
+import '../viewmodel/photo_viewmodel.dart';
 import '../viewmodel/search_viewmodel.dart';
+import 'dart:async';
+import 'dart:io';
+import 'dart:typed_data';
+import 'package:image/image.dart' as IMG;
 
 class DouaAddAcaoPage extends StatefulWidget {
   DouaAddAcaoPage() : super();
@@ -20,8 +28,10 @@ class DouaAddAcaoPage extends StatefulWidget {
 
 class _DouaAddAcaoPageState extends State<DouaAddAcaoPage> {
   final int TYPE_DONOR = 2;
-  final int TYPE_DONATE = 3;
+  final int TYPE_DONATE = 1;
   bool isLoading = false;
+  late Asset photo;
+  String? base64string;
   Location location = Location();
   LatLng? locationSave;
   LocationData? _currentPosition;
@@ -32,6 +42,7 @@ class _DouaAddAcaoPageState extends State<DouaAddAcaoPage> {
   Completer<GoogleMapController> _mapCompletController = Completer();
   int _markerIdCounter = 0;
   final _searchViewModel = SearchViewModel();
+  final _photoViewModel = PhotoViewModel();
   late Marker addMarker;
   late BuildContext mContext;
 
@@ -144,8 +155,15 @@ class _DouaAddAcaoPageState extends State<DouaAddAcaoPage> {
   }
 
   _body() {
-    return DouaImage(
-      height: 150.0,
+    return GestureDetector(
+      onTap: (() async {
+        await _checkPermission(context);
+        setState(() {});
+      }),
+      child: DouaImage(
+        height: 150.0,
+        base64: base64string,
+      ),
     );
   }
 
@@ -177,7 +195,7 @@ class _DouaAddAcaoPageState extends State<DouaAddAcaoPage> {
                       await _searchViewModel.postAcao(DouaAcao(
                           titulo: Constants.DESCRIPTION,
                           descricao: _controller.text,
-                          urlImg: "https://picsum.photos/250?image=123",
+                          urlImg: base64string,
                           localizacao: DouaLocalizacao(
                               latitude: locationSave!.latitude,
                               longitude: locationSave!.longitude),
@@ -255,5 +273,49 @@ class _DouaAddAcaoPageState extends State<DouaAddAcaoPage> {
 
   void _loadLocal() {
     getLoc();
+  }
+
+  Future<void> _checkPermission(BuildContext context) async {
+    List<Asset> _resultList = [];
+    FocusScope.of(context).requestFocus(FocusNode());
+    Map<permission.Permission, permission.PermissionStatus> statues = await [
+      permission.Permission.camera,
+      permission.Permission.storage
+    ].request();
+    permission.PermissionStatus? statusCamera =
+        statues[permission.Permission.camera];
+    permission.PermissionStatus? statusStorage =
+        statues[permission.Permission.storage];
+
+    bool isGranted = statusCamera == permission.PermissionStatus.granted &&
+        statusStorage == permission.PermissionStatus.granted;
+    //&& statusPhotos == PermissionStatus.granted;
+    if (isGranted) {
+      _resultList = await _photoViewModel.catchPhoto(context);
+      photo = _resultList[0];
+      ByteData asdf = await photo.getByteData(quality: 10);
+      Uint8List imagebytes = asdf.buffer.asUint8List();
+      Uint8List resizedImg;
+      IMG.Image? img = IMG.decodeImage(imagebytes);
+      IMG.Image resized = IMG.copyResize(img!, width: 150, height: 150);
+      resizedImg = Uint8List.fromList(IMG.encodePng(resized));
+      base64string = base64.encode(resizedImg);
+    }
+    bool isPermanentlyDenied =
+        statusCamera == permission.PermissionStatus.permanentlyDenied ||
+            statusStorage == permission.PermissionStatus.permanentlyDenied;
+    //|| statusPhotos == permission.PermissionStatus.permanentlyDenied;
+    if (isPermanentlyDenied) {
+      DouaDialogProgress.showLoading(
+          context, false, "permita acesso a camera e galeria de fotos");
+    }
+  }
+
+  Future<void> requestPermission(permission.Permission permission) async {
+    final status = await permission.request();
+
+    setState(() {
+      print(status);
+    });
   }
 }

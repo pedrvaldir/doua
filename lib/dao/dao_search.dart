@@ -21,10 +21,30 @@ class DaoSearch {
     return ApiResponse(202, data: result);
   }
 
+  Future<ApiResponse> getComentarios(String idAcao) async {
+    final chopper = DouaApiService.create();
+    List<dynamic> result = [];
+
+    final respRetornlist = await chopper.getAcoes(
+        "authorization", EndPoints.getComentario + idAcao);
+
+    if (respRetornlist.statusCode == 200 || respRetornlist.statusCode == 201) {
+      if (respRetornlist.bodyString != "{\"Erro\":\"Cliente nÃ£o encontrado\"}")
+        result = respRetornlist.body;
+    }
+
+    // else
+    // throwException(respRetornlist.error.toString());
+
+    return ApiResponse(202, data: result);
+  }
+
   Future<ApiResponse> postAcoes(DouaAcao acao) async {
     Map<String, dynamic> json = handlerJson(acao);
     final chopper = DouaApiService.create();
     List<dynamic> result = [];
+
+    print(json.toString());
 
     final respRetornlist = await chopper.postAcoes(
       "authorization",
@@ -40,19 +60,37 @@ class DaoSearch {
     return ApiResponse(202, data: result);
   }
 
+  Future<ApiResponse> postComentario(String comentario, int acao) async {
+    final chopper = DouaApiService.create();
+    List<dynamic> result = [];
+    Map<String, dynamic> json = handlerJsonComentario(comentario);
+    final respRetornlist = await chopper.postComentario("authorization", json,
+        EndPoints.postComentario + acao.toString() + EndPoints.comentario);
+
+    if (respRetornlist.statusCode != 200 && respRetornlist.statusCode != 201)
+      throwException(respRetornlist.error.toString());
+
+    return ApiResponse(202, data: result);
+  }
+
   Map<String, dynamic> handlerJson(DouaAcao acao) {
     return {
       "descricao": acao.descricao,
-  "localizacao": {
-    "latitude": acao.localizacao!.latitude,
-    "longitude": acao.localizacao!.longitude
-  },
-  "qtdVotos": acao.qtdVotos,
-  "tipoAcao": {
-    "id": acao.idTipoAcao
-  },
-  "titulo": acao.titulo,
-  "urlImg": acao.urlImg
+      "localizacao": {
+        "latitude": acao.localizacao!.latitude,
+        "longitude": acao.localizacao!.longitude
+      },
+      "qtdVotos": acao.qtdVotos,
+      "tipoAcao": {"id": acao.idTipoAcao},
+      "titulo": acao.titulo,
+      "urlImg": acao.urlImg
+    };
+  }
+
+  Map<String, dynamic> handlerJsonComentario(String comentario) {
+    return {
+      "descricao": comentario,
+      "criador": {"id": 4}
     };
   }
 }

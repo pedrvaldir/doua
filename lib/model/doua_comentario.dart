@@ -7,7 +7,7 @@ class DouaComentario {
 
   DouaComentario({this.id, this.descricao, this.criador});
 
-  DouaComentario.fromMap(Map<String, dynamic> map) {
+  DouaComentario.fromMap(Map<dynamic, dynamic> map) {
     id = map['id'];
     descricao = map['descricao'];
     criador = DouaUser.fromMap(map['criador']);

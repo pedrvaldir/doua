@@ -12,8 +12,17 @@ abstract class DouaApiService extends ChopperService {
   Future<Response> getAcoes(
       @Header('Authorization') String authorization, @Path() String urlPath);
 
+@Get(path: "{urlPath}")
+  Future<Response> getComentario(
+      @Header('Authorization') String authorization, @Path() String urlPath);
+
+
   @Post(path: "{urlPath}")
   Future<Response> postAcoes(@Header('Authorization') String authorization,
+      @Body() Map<String, dynamic> body, @Path() String urlPath);
+
+      @Post(path: "{urlPath}")
+  Future<Response> postComentario(@Header('Authorization') String authorization,
       @Body() Map<String, dynamic> body, @Path() String urlPath);
 
   @Get(path: "{urlPath}")
