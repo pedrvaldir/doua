@@ -23,7 +23,7 @@ class _ShowCaseInitialPageState extends State<ShowCaseInitialPage> {
       body: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 30),
         children: [
-          DouaText.headingOne('Show Case'),
+          DouaText.headingOne('DOUA design'),
           vertical_space_small(),
           Divider(),
           vertical_space_small(),
@@ -50,31 +50,31 @@ Widget verticalSpaceMedium() {
 }
 
 List<Widget> get textWidgets => [
-      DouaText.headline('Text Styles'),
+      DouaText.headline('Estilo do textos'),
       verticalSpaceMedium(),
-      DouaText.headingOne('Heading One'),
+      DouaText.headingOne('Titulo 1'),
       verticalSpaceMedium(),
-      DouaText.headingTwo('Heading Two'),
+      DouaText.headingTwo('Titulo 2'),
       verticalSpaceMedium(),
-      DouaText.headingTitle('Heading Title'),
+      DouaText.headingTitle('Subtitulo'),
       verticalSpaceMedium(),
-      DouaText.headline('Headline'),
+      DouaText.headline('cabeçalho'),
       verticalSpaceMedium(),
-      DouaText.subheading('This will be a sub heading to the headling'),
+      DouaText.subheading('texto para cabeçalho'),
       verticalSpaceMedium(),
-      DouaText.body('Body Text that will be used for the general body'),
+      DouaText.body('Corpo do texto em geral'),
       verticalSpaceMedium(),
-      DouaText.caption('This will be the caption usually for smaller details'),
+      DouaText.caption('Texto em caixa alta'),
       verticalSpaceMedium(),
     ];
 
 List<Widget> buttonWidgets(var context) => [
-      DouaTagTitle(title: "TAG TITLE"),
-      DouaText.body('List Cards'),
-      DouaTagTitle(title: "TAG Custom", iconDoua: Icons.add),
+      DouaTagTitle(title: "TITULO TAG"),
+      DouaText.body('lista de Cards'),
+      DouaTagTitle(title: "ICONE E TITULO", iconDoua: Icons.add),
       DouaText.body('List Cards'),
       DouaListCard(list: _listCards()),
-      DouaText.headline('Buttons'),
+      DouaText.headline('Botões'),
       verticalSpaceMedium(),
       DouaText.body('Normal'),
       vertical_space_small(),
@@ -85,18 +85,18 @@ List<Widget> buttonWidgets(var context) => [
         },
       ),
       vertical_space_small(),
-      DouaText.body('Disabled'),
+      DouaText.body('Desativado'),
       vertical_space_small(),
       DouaButton(
-        title: 'SIGN IN',
+        title: 'Logar',
         disabled: true,
         onClick: () {},
       ),
       vertical_space_small(),
-      DouaText.body('Busy'),
+      DouaText.body('Loading'),
       vertical_space_small(),
       DouaButton(
-        title: 'SIGN IN',
+        title: 'Entrar',
         busy: true,
         onClick: () {},
       ),
@@ -104,7 +104,7 @@ List<Widget> buttonWidgets(var context) => [
       DouaText.body('Outline'),
       vertical_space_small(),
       DouaButton.outline(
-        title: 'Select location',
+        title: 'Botao com íconeç',
         leading: Icon(
           Icons.send,
           color: DouaPallet.kcPrimaryColor,
@@ -116,35 +116,48 @@ List<Widget> buttonWidgets(var context) => [
 
 _listCards() {
   List<DouaAcao> acoes = [
-    DouaAcao(titulo: "titulo", id:2, urlImg: "https://picsum.photos/250?image=9", descricao:"",localizacao: DouaLocalizacao(id:1, latitude:1.00, longitude:2.00), idTipoAcao: 1, qtdVotos:2),
-    DouaAcao(titulo: "titulo", id:2, urlImg: "https://picsum.photos/250?image=12", descricao:"",localizacao: DouaLocalizacao(id:1, latitude:1.00, longitude:2.00), idTipoAcao: 1, qtdVotos:2)];
+    DouaAcao(
+        titulo: "titulo 1",
+        id: 2,
+        descricao: "",
+        localizacao: DouaLocalizacao(id: 1, latitude: 1.00, longitude: 2.00),
+        idTipoAcao: 1,
+        qtdVotos: 2),
+    DouaAcao(
+        titulo: "titulo 2",
+        id: 2,
+        descricao: "",
+        localizacao: DouaLocalizacao(id: 1, latitude: 1.00, longitude: 2.00),
+        idTipoAcao: 1,
+        qtdVotos: 2)
+  ];
 
   return acoes;
 }
 
 List<Widget> get inputFields => [
-      DouaText.headline('Input Field'),
+      DouaText.headline('Campo de texto'),
       vertical_space_small(),
       DouaText.body('Normal'),
       vertical_space_small(),
       DouaInputField(
         controller: TextEditingController(),
-        placeholder: 'Enter Password',
+        placeholder: 'Senha',
       ),
       vertical_space_small(),
-      DouaText.body('Leading Icon'),
+      DouaText.body('Icone esquerda'),
       vertical_space_small(),
       DouaInputField(
         controller: TextEditingController(),
         leading: Icon(Icons.reset_tv),
-        placeholder: 'Enter TV Code',
+        placeholder: 'Text',
       ),
       vertical_space_small(),
-      DouaText.body('Trailing Icon'),
+      DouaText.body('Icone a direita'),
       vertical_space_small(),
       DouaInputField(
         controller: TextEditingController(),
         trailing: Icon(Icons.clear_outlined),
-        placeholder: 'Search for things',
+        placeholder: 'Pesquisa',
       ),
     ];

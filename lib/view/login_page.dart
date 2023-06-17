@@ -273,12 +273,12 @@ class _LoginPageState extends State<LoginPage> {
   Widget _listOptions() {
     return Column(
       children: [
-        DouaTagTitle(
-            title: "Informações", iconDoua: Icons.account_circle_rounded),
-        DouaTagTitle(
-            title: "Notificações", iconDoua: Icons.circle_notifications),
-        DouaTagTitle(title: "Favoritos", iconDoua: Icons.favorite),
-        DouaSpace.verticalSpaceSmall,
+        // DouaTagTitle(
+        //     title: "Informações", iconDoua: Icons.account_circle_rounded),
+        // DouaTagTitle(
+        //     title: "Notificações", iconDoua: Icons.circle_notifications),
+        // DouaTagTitle(title: "Favoritos", iconDoua: Icons.favorite),
+        // DouaSpace.verticalSpaceSmall,
         _signOut(),
       ],
     );
