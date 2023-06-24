@@ -74,8 +74,12 @@ class _SearchPageState extends State<SearchPage> {
                     left: DouaSizes.spacing20, right: DouaSizes.spacing20),
                 child: GestureDetector(
                   onTap: () {
-                    Constants.TYPE_DONOR = true;
-                    DouaDialogAcao.showInclude(context);
+                    if (_loginViewModel.isLogged) {
+                      Constants.TYPE_DONOR = true;
+                      DouaDialogAcao.showInclude(context);
+                    } else {
+                      validateField();
+                    }
                   },
                   child: DouaTagTitle(
                     title: Strings.TITLE_DONOR,
@@ -93,8 +97,12 @@ class _SearchPageState extends State<SearchPage> {
                     left: DouaSizes.spacing20, right: DouaSizes.spacing20),
                 child: GestureDetector(
                   onTap: () {
-                    Constants.TYPE_DONOR = false;
-                    DouaDialogAcao.showInclude(context);
+                    if (_loginViewModel.isLogged) {
+                      Constants.TYPE_DONOR = false;
+                      DouaDialogAcao.showInclude(context);
+                    } else {
+                      validateField();
+                    }
                   },
                   child: DouaTagTitle(
                     title: Strings.TITLE_GRANTEES,
@@ -124,5 +132,10 @@ class _SearchPageState extends State<SearchPage> {
       return _loginViewModel.user.name.toString() + "\n";
     else
       return "";
+  }
+
+  validateField() {
+    ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Somente usuário logado pode incluir ação")));
   }
 }

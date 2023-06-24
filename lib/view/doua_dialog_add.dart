@@ -105,7 +105,6 @@ class DouaDialogAcao {
         IconButton(
           icon: Icon(Icons.close),
           onPressed: () {
-            Constants.DESCRIPTION = "";
             Navigator.pop(context);
           },
         ),
@@ -116,10 +115,17 @@ class DouaDialogAcao {
   static _button(BuildContext context) {
     return TextButton(
         onPressed: () {
+          if(Constants.DESCRIPTION != ""){
           print('Clicked');
+          Constants.DESCRIPTION = "";
           Navigator.pop(context);
           Navigator.of(context)
               .push(MaterialPageRoute(builder: (context) => DouaAddAcaoPage()));
+          }else{
+              ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text("inclua um titulo")));
+          }
+         
         },
         child: Text("continuar"));
   }

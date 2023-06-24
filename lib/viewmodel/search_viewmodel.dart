@@ -100,12 +100,12 @@ class SearchViewModel {
     return listAcoes;
   }
 
-  Future<bool> postComentario(String comentario, int acao) async {
+  Future<bool> postComentario(String comentario, int acao, DouaUser user) async {
     _streamController.add(true);
     isLogged = true;
     ApiResponse apiReponse;
     try {
-      apiReponse = await DaoSearch().postComentario(comentario, acao);
+      apiReponse = await DaoSearch().postComentario(comentario, acao, user);
 
       if (apiReponse.statusCode == 200 || apiReponse.statusCode == 202) {
         return true;

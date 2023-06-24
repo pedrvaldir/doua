@@ -4,6 +4,7 @@ import '../Utils/constants.dart';
 import '../Utils/doua_api_service.dart';
 import '../Utils/exceptions.dart';
 import '../api_response.dart';
+import '../model/doua_user.dart';
 
 class DaoSearch {
   Future<ApiResponse> getAcoes() async {
@@ -60,10 +61,10 @@ class DaoSearch {
     return ApiResponse(202, data: result);
   }
 
-  Future<ApiResponse> postComentario(String comentario, int acao) async {
+  Future<ApiResponse> postComentario(String comentario, int acao, DouaUser email) async {
     final chopper = DouaApiService.create();
     List<dynamic> result = [];
-    Map<String, dynamic> json = handlerJsonComentario(comentario);
+    Map<String, dynamic> json = handlerJsonComentario(comentario, email);
     final respRetornlist = await chopper.postComentario("authorization", json,
         EndPoints.postComentario + acao.toString() + EndPoints.comentario);
 
@@ -87,10 +88,10 @@ class DaoSearch {
     };
   }
 
-  Map<String, dynamic> handlerJsonComentario(String comentario) {
+  Map<String, dynamic> handlerJsonComentario(String comentario, DouaUser user) {
     return {
       "descricao": comentario,
-      "criador": {"id": 4}
+      "criador": {"nome": user.name, "email": user.email, "photoUrl": user.photoUrl, "uid": user.uid}
     };
   }
 }

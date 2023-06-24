@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'package:doua/Utils/prefs.dart';
 import 'package:doua/model/doua_acao.dart';
 import 'package:doua/model/doua_comentario.dart';
 import 'package:doua_uikit/doua_uikit.dart';
@@ -8,6 +9,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 
 import '../Utils/sliver_appbar_delegate.dart';
+import '../viewmodel/login_viewmodel.dart';
 import '../viewmodel/search_viewmodel.dart';
 import 'doua_dialog_add.dart';
 
@@ -27,6 +29,7 @@ class _LocalsPageState extends State<LocalsPage> {
   GoogleMapController? mapController;
   late List<DouaAcao> listAcoes = [];
   final _searchViewModel = SearchViewModel();
+  final _loginViewModel = LoginViewModel();
   var _controller = TextEditingController();
   final TextEditingController _textFieldController = TextEditingController();
   String? codeDialog;
@@ -44,25 +47,26 @@ class _LocalsPageState extends State<LocalsPage> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+        debugShowCheckedModeBanner: false,
         home: Scaffold(
-      body: Stack(children: <Widget>[
-        GoogleMap(
-          onMapCreated: (controller) {
-            setState(() {
-              mapController = controller;
-            });
-          },
-          initialCameraPosition: CameraPosition(
-            target: _initialcameraposition,
-            zoom: 17,
-          ),
-          markers: getmarkers(),
-          mapType: MapType.normal,
-          myLocationEnabled: true,
-        ),
-      ]),
-      floatingActionButton: _addAcao(),
-    ));
+          body: Stack(children: <Widget>[
+            GoogleMap(
+              onMapCreated: (controller) {
+                setState(() {
+                  mapController = controller;
+                });
+              },
+              initialCameraPosition: CameraPosition(
+                target: _initialcameraposition,
+                zoom: 17,
+              ),
+              markers: getmarkers(),
+              mapType: MapType.normal,
+              myLocationEnabled: true,
+            ),
+          ]),
+          floatingActionButton: _addAcao(),
+        ));
   }
 
   Set<Marker> getmarkers() {
@@ -161,25 +165,25 @@ class _LocalsPageState extends State<LocalsPage> {
           )),
           Padding(
             padding: const EdgeInsets.only(top: 8),
-            child: DouaText.headingTitle(acao.descricao!),
+            child: DouaText.body(acao.descricao!),
           ),
-          Container(
-            height: 40,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisSize: MainAxisSize.max,
-              textDirection: TextDirection.rtl,
-              children: [
-                IconButton(
-                  icon: Icon(Icons.favorite),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                ),
-                DouaText.subheading(acao.qtdVotos.toString()),
-              ],
-            ),
-          )
+          // Container(
+          //   height: 40,
+          //   child: Row(
+          //     crossAxisAlignment: CrossAxisAlignment.center,
+          //     mainAxisSize: MainAxisSize.max,
+          //     textDirection: TextDirection.rtl,
+          //     children: [
+          //       IconButton(
+          //         icon: Icon(Icons.favorite),
+          //         onPressed: () {
+          //           Navigator.pop(context);
+          //         },
+          //       ),
+          //       DouaText.subheading(acao.qtdVotos.toString()),
+          //     ],
+          //   ),
+          // )
         ],
       ),
     );
@@ -319,21 +323,30 @@ class _LocalsPageState extends State<LocalsPage> {
                 textColor: Colors.white,
                 child: Text('Salvar'),
                 onPressed: () async {
-                  bool result =
-                      await _searchViewModel.postComentario(valueText!, acao!);
-                  Navigator.pop(context);
-                  Navigator.pop(context);
-                  if (result) {
-                    valueText = "";
-                    _textFieldController.clear();
-                    ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text("Comentário incluido")));
+                  if (valueText != null && valueText!.isNotEmpty) {
+                    bool result = await _searchViewModel.postComentario(
+                        valueText!, acao!, Prefs().getUser());
+                    Navigator.pop(context);
+                    Navigator.pop(context);
+                    if (result) {
+                      valueText = "";
+                      _textFieldController.clear();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("Comentário incluido")));
+                    }
+                  } else {
+                    validateFiled();
                   }
                 },
               ),
             ],
           );
         });
+  }
+
+  validateFiled() {
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text("Preencha todos os campos")));
   }
 
   Padding WidgetComment(DouaComentario comentarios) {
@@ -375,6 +388,7 @@ class _LocalsPageState extends State<LocalsPage> {
   _loadLocals() async {
     DouaDialogProgress.showLoading(context, false, "Carregando informações");
     getLoc();
+    await _loginViewModel.checkUserLogged();
     listAcoes = await _searchViewModel.getAcoes();
     Navigator.pop(context);
     if (!mounted) return;
@@ -387,8 +401,13 @@ class _LocalsPageState extends State<LocalsPage> {
       backgroundColor: Theme.of(context).primaryColor,
       foregroundColor: Colors.white,
       onPressed: () {
-        print('Clicked');
-        DouaDialogAcao.showInclude(context);
+        if(_loginViewModel.isLogged){
+          print('Clicked');
+          DouaDialogAcao.showInclude(context);
+        }else{
+          validateField();
+        }
+        
       },
     );
   }
@@ -426,5 +445,10 @@ class _LocalsPageState extends State<LocalsPage> {
       ),
       backgroundColor: Colors.transparent,
     );
+  }
+
+  validateField(){
+     ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text("Somente usuário logado pode incluir ação")));
   }
 }

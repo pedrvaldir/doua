@@ -19,11 +19,12 @@ class DouaApp extends StatelessWidget {
   Widget _materialApp() {
     return MaterialApp(
       title: 'Doua',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.green,
       ),
-      home: ShowCaseInitialPage('Doua'),
-      //home: HomePage('Doua'),
+      //home: ShowCaseInitialPage('Doua'),
+      home: HomePage('Doua'),
     );
   }
 }

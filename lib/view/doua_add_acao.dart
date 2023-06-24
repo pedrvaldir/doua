@@ -189,28 +189,34 @@ class _DouaAddAcaoPageState extends State<DouaAddAcaoPage> {
                 child: DouaButton(
                   title: "Salvar",
                   onClick: () async {
-                    DouaDialogProgress.showLoading(context, false, "salvando");
-                    mContext = context;
-                    try {
-                      await _searchViewModel.postAcao(DouaAcao(
-                          titulo: Constants.DESCRIPTION,
-                          descricao: _controller.text,
-                          urlImg: base64string,
-                          localizacao: DouaLocalizacao(
-                              latitude: locationSave!.latitude,
-                              longitude: locationSave!.longitude),
-                          idTipoAcao:
-                              Constants.TYPE_DONOR ? TYPE_DONOR : TYPE_DONATE,
-                          qtdVotos: 0));
-                      print("salvo");
-                    } catch (e) {
-                      print("exception");
-                    }
+                    if (_controller.text.isNotEmpty) {
+                      DouaDialogProgress.showLoading(
+                          context, false, "salvando");
+                      mContext = context;
+                      try {
+                        await _searchViewModel.postAcao(DouaAcao(
+                            titulo: Constants.DESCRIPTION,
+                            descricao: _controller.text,
+                            urlImg: base64string,
+                            localizacao: DouaLocalizacao(
+                                latitude: locationSave!.latitude,
+                                longitude: locationSave!.longitude),
+                            idTipoAcao:
+                                Constants.TYPE_DONOR ? TYPE_DONOR : TYPE_DONATE,
+                            qtdVotos: 0));
+                        print("salvo");
+                      } catch (e) {
+                        print("exception");
+                      }
 
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => HomePage("Doua")),
-                    );
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => HomePage("Doua")),
+                      );
+                    } else {
+                      validateFiled("preencha o campo descrição");
+                    }
                   },
                 ),
               )),
@@ -267,6 +273,7 @@ class _DouaAddAcaoPageState extends State<DouaAddAcaoPage> {
 
   _description() {
     return DouaInputField(
+      placeholder: "Adicione aqui detalhes sobre a ação",
       controller: _controller,
     );
   }
@@ -317,5 +324,10 @@ class _DouaAddAcaoPageState extends State<DouaAddAcaoPage> {
     setState(() {
       print(status);
     });
+  }
+
+  validateFiled(String message) {
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(message)));
   }
 }
