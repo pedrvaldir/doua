@@ -324,8 +324,9 @@ class _LocalsPageState extends State<LocalsPage> {
                 child: Text('Salvar'),
                 onPressed: () async {
                   if (valueText != null && valueText!.isNotEmpty) {
+                    dynamic doador = await Prefs().getUser();
                     bool result = await _searchViewModel.postComentario(
-                        valueText!, acao!, Prefs().getUser());
+                        valueText!, acao!, doador);
                     Navigator.pop(context);
                     Navigator.pop(context);
                     if (result) {
@@ -353,15 +354,17 @@ class _LocalsPageState extends State<LocalsPage> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12.0),
       child: Container(
-          height: 50,
+          height: 80,
           child: Row(
             children: [
               Flexible(
-                child: DouaAvatar(url: comentarios.criador!.photoUrl),
+                child: DouaAvatar(url: comentarios.criador!.urlfoto),
                 flex: 1,
               ),
               Flexible(
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -401,13 +404,12 @@ class _LocalsPageState extends State<LocalsPage> {
       backgroundColor: Theme.of(context).primaryColor,
       foregroundColor: Colors.white,
       onPressed: () {
-        if(_loginViewModel.isLogged){
+        if (_loginViewModel.isLogged) {
           print('Clicked');
           DouaDialogAcao.showInclude(context);
-        }else{
+        } else {
           validateField();
         }
-        
       },
     );
   }
@@ -447,8 +449,8 @@ class _LocalsPageState extends State<LocalsPage> {
     );
   }
 
-  validateField(){
-     ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text("Somente usuário logado pode incluir ação")));
+  validateField() {
+    ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Somente usuário logado pode incluir ação")));
   }
 }

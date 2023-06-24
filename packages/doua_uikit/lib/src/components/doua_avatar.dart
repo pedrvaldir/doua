@@ -9,6 +9,14 @@ class DouaAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CircleAvatar(radius: value ?? 50, foregroundImage: url==null ? AssetImage('assets/place-holder.png') as ImageProvider : NetworkImage(url!), );
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: CircleAvatar(
+        radius: value ?? 30,
+        foregroundImage: url == null
+            ? AssetImage('assets/place-holder.png') as ImageProvider
+            : NetworkImage(url!, scale: 0.001),
+      ),
+    );
   }
 }

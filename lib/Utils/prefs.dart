@@ -15,12 +15,27 @@ class Prefs {
     return result;
   }
 
+  readOnboarding() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    prefs.setString('onboarding', "true");
+  }
+
+  getOnboarding() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (prefs.getString("onboarding") != "true"){
+      return false;
+    }else{
+      return true;
+    }
+  }
+
   writeNameAndUser(DouaUser user) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     prefs.setString('name', user.name.toString());
     prefs.setString('email', user.email.toString());
-    prefs.setString('photoUrl', user.photoUrl.toString());
+    prefs.setString('urlfoto', user.urlfoto.toString());
   }
 
   getName() async {
@@ -32,7 +47,7 @@ class Prefs {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.remove("name");
     prefs.remove("email");
-    prefs.remove("photoUrl");
+    prefs.remove("urlfoto");
   }
 
   isUserLogged() async {
@@ -42,13 +57,13 @@ class Prefs {
     return prefs.getString('name') != null;
   }
 
-  getUser() async {
+  Future<DouaUser> getUser() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return DouaUser(
         name: prefs.getString('name'),
         email: prefs.getString('email'),
-        uid: prefs.getString('uid'),
-        photoUrl: prefs.getString('photoUrl'));
+//        uid: prefs.getString('uid'),
+        urlfoto: prefs.getString('urlfoto'));
   }
 
   // rememberUser(String pass, String mail) async {

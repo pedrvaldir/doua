@@ -4,14 +4,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 class DouaUser {
   late String? name;
   late String? email;
-  late String? photoUrl;
+  late String? urlfoto;
   late String? uid;
-  DouaUser({this.name, this.email, this.photoUrl, this.uid});
+  DouaUser({this.name, this.email, this.urlfoto, this.uid});
 
   DouaUser.fromMap(Map<String, dynamic> map) {
     name = map['nome'];
     email = map['email'];
-    photoUrl = map['urlFoto'];
+    urlfoto = map['urlFoto'];
     uid = map['token'];
   }
 
@@ -19,7 +19,7 @@ class DouaUser {
     return DouaUser(
       name: user.displayName,
       email: user.email,
-      photoUrl: user.photoURL,
+      urlfoto: user.photoURL,
       uid: user.uid,
     );
   }

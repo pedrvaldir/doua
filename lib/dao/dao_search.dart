@@ -61,10 +61,12 @@ class DaoSearch {
     return ApiResponse(202, data: result);
   }
 
-  Future<ApiResponse> postComentario(String comentario, int acao, DouaUser email) async {
+  Future<ApiResponse> postComentario(
+      String comentario, int acao, DouaUser user) async {
     final chopper = DouaApiService.create();
     List<dynamic> result = [];
-    Map<String, dynamic> json = handlerJsonComentario(comentario, email);
+    Map<String, dynamic> json = handlerJsonComentario(comentario, user);
+    print("jsdon: $json");
     final respRetornlist = await chopper.postComentario("authorization", json,
         EndPoints.postComentario + acao.toString() + EndPoints.comentario);
 
@@ -91,7 +93,11 @@ class DaoSearch {
   Map<String, dynamic> handlerJsonComentario(String comentario, DouaUser user) {
     return {
       "descricao": comentario,
-      "criador": {"nome": user.name, "email": user.email, "photoUrl": user.photoUrl, "uid": user.uid}
+      "criador": {
+        "nome": user.name,
+        "email": user.email,
+        "urlFoto": user.urlfoto
+      }
     };
   }
 }

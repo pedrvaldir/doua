@@ -170,7 +170,7 @@ class _LoginPageState extends State<LoginPage> {
     return StreamBuilder<bool>(
         stream: _loginViewModel.stream,
         builder: (context, snapshot) {
-          return DouaAvatar(url: _loginViewModel.user.photoUrl);
+          return DouaAvatar(url: _loginViewModel.user.urlfoto);
         });
   }
 

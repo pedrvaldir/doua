@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:doua/Utils/prefs.dart';
 import 'package:doua/api_response.dart';
 import 'package:doua/view/search_page.dart';
 import 'package:doua_uikit/doua_uikit.dart';
@@ -107,7 +108,11 @@ class _HomePageState extends State<HomePage> {
   Future<void> getOnboarding() async {
     if (!_loginViewModel.isLogged) {
       List<TutorialSteps> onboarding = await _homeViewModel.getOnboarding();
-      if (!onboarding.isEmpty) DouaOnboading(context, onboarding).show(context);
+      bool viewOnboarding = await Prefs().getOnboarding();
+      if (!onboarding.isEmpty && !viewOnboarding) {
+        Prefs().readOnboarding();
+        DouaOnboading(context, onboarding).show(context);
+      }
     }
   }
 
